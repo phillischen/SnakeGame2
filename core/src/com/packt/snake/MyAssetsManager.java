@@ -36,6 +36,8 @@ public class MyAssetsManager{
     public String myUsername = "player";
     public boolean newDirection = false;
     public int direction = 0;
+    public boolean disconnect = false;
+    public String disconnectP = "";
 
 
     /////////////////resource loader//////////////////////

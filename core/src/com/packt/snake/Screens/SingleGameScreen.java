@@ -57,7 +57,7 @@ public class SingleGameScreen implements Screen{
     public SingleGameScreen(SnakeGame game) {
         this.game = game;
         myAM = this.game.getAm();
-        myfood = new Food();
+        myfood = new Food(this.game);
         mySnake = new Snake(this.game);
         snakeList.add(new Snake(this.game,1100,1100,"AI"));
 

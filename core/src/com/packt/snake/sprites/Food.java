@@ -4,25 +4,36 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Disposable;
+import com.packt.snake.MyAssetsManager;
+import com.packt.snake.SnakeGame;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static sun.misc.Version.print;
 
 public class Food implements Disposable{
-    private Texture food;
+    private Texture food,background;
     private ArrayList<int[]> foodlist = new ArrayList<int[]>();
     private int foodX, foodY;
     private static final int padding = 300;
     private java.util.Random randomX = new java.util.Random(1);
     private java.util.Random randomY = new java.util.Random(1);
-    private static final int maxWidth = Gdx.graphics.getWidth() - padding;
-    private static final int maxHeigh = Gdx.graphics.getHeight() - padding;
+    private int maxWidth;
+    private int maxHeigh;
+    private SnakeGame mygame;
+    private MyAssetsManager myAm;
 
-    public Food (){
+    public Food (SnakeGame game){
+        mygame = game;
+        myAm = mygame.getAm();
+        myAm.loadMap();
+        myAm.manager.finishLoading();
+        background = myAm.manager.get(myAm.MAP1);
+        maxWidth = background.getWidth() - padding;
+        maxHeigh = background.getHeight() - padding;
         food = new Texture("apple.png");
         placeFood();
+
     }
 
     public void placeFood(){ //randomly put food on screen

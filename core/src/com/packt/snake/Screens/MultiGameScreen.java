@@ -57,7 +57,7 @@ public class MultiGameScreen implements Screen{
     public MultiGameScreen(SnakeGame game) {
         this.game = game;
         myAM = this.game.getAm();
-        myfood = new Food();
+        myfood = new Food(this.game);
         //initiate the snake controlled my device owner
         int position = getInitialPosition(myAM.myUsername);
         mySnake = new Snake(this.game,position,position,myAM.myUsername);
