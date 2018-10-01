@@ -24,7 +24,7 @@ public class MultiGameScreen implements Screen{
 
     private static final float MOVE_TIME = 0.03F;
 
-    private static float speed = 0.1f;
+    private static float speed = 0.02f;
     private float timer = speed;
     private static final float roomOutRatio = 0.2f;
 
@@ -212,6 +212,7 @@ public class MultiGameScreen implements Screen{
         if(timer<=0){
             timer=speed;
 
+            //////////update local snake//////////////////
             int snakeXBeforeUpdate = mySnake.getHeadPosX();
             int snakeYBeforeUpdate = mySnake.getHeadPosY();
             if (lastdirection != directionDegree){
@@ -219,7 +220,6 @@ public class MultiGameScreen implements Screen{
                 myAM.setNewDirection(directionDegree);
             }
             mySnake.setSettingDirection(myAM.getMyDirection());
-
             mySnake.moveSnake();
 
             if (mySnake.checkEdge()){
@@ -233,9 +233,19 @@ public class MultiGameScreen implements Screen{
             checkFoodCollision(mySnake);
             myfood.placeFood();
             mySnake.updateSize();
-
+            /////////update remote snake//////////////////////
+            if (myAM.disconnect) { //get rid of the disconnected snake
+                for (int i = snakeList.size() - 1; i >= 0; i--) {
+                    Snake snake = snakeList.get(i);
+                    if (snake.getMyUsername().equals(myAM.disconnectP)) {
+                        snakeList.remove(i);
+                        break;
+                    }
+                }
+            }
             for (int i = snakeList.size()-1;i>=0;i--){
                 Snake snake = snakeList.get(i);
+
                 int snkXB4Update = snake.getHeadPosX();
                 int snkYB4Update = snake .getHeadPosY();
                 snake.setSettingDirection(myAM.getRemoteDirection(snake.getMyUsername()));
@@ -243,8 +253,11 @@ public class MultiGameScreen implements Screen{
                 if(snake.checkEdge()){
                     snake.setHeadPosX(snakeXBeforeUpdate);
                     snake.setHeadPosY(snakeYBeforeUpdate);
+                    hud.updateDead(snake.getMyUsername());
                     snakeList.remove(i);//really needed?
-                    state = STATE.GAME_OVER;
+
+                    //state = STATE.GAME_OVER;
+
                 }else{
                     snake.updateBodyPartsPosition(snkXB4Update,snkYB4Update);
                 }
@@ -253,6 +266,8 @@ public class MultiGameScreen implements Screen{
                 snake.updateSize();
             }
 
+
+            ////////////////////////////////////////////////////
             camera.position.set(mySnake.getHeadPosX(), mySnake.getHeadPosY(), 0);
             int i = mySnake.getScore()/100;
             camera.viewportWidth = screenWidth * (1+i*roomOutRatio);

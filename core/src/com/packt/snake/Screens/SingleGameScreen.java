@@ -10,6 +10,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -54,6 +60,8 @@ public class SingleGameScreen implements Screen{
     private BitmapFont bitmapFont;
     private GlyphLayout layout = new GlyphLayout();
     FlingDirection myFlingDirection;
+    private Stage myStage;
+    private Skin mySkin;
 
     public SingleGameScreen(SnakeGame game) {
         this.game = game;
@@ -75,6 +83,8 @@ public class SingleGameScreen implements Screen{
         camera.viewportWidth = screenWidth;
         camera.viewportHeight = screenHeight;
 
+
+        //addButton();
         hud = new Hud(myAM);
 
     }
@@ -90,6 +100,26 @@ public class SingleGameScreen implements Screen{
         bitmapFont = new BitmapFont();
         myFlingDirection = new FlingDirection();
         Gdx.input.setInputProcessor(new GestureDetector(myFlingDirection));
+    }
+
+    private void addButton(){
+        myStage = new Stage(viewport, myAM.batch);
+        myAM.loadSkin();
+        myAM.manager.finishLoading();
+        mySkin = myAM.manager.get(myAM.SKIN);
+
+        Button button1 = new TextButton("GO",mySkin);
+        button1.setSize(200,200);
+        button1.setPosition(Gdx.graphics.getWidth()-50,Gdx.graphics.getHeight()-50);
+
+        button1.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                System.out.println("button pressed");
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
+        myStage.addActor(button1);
     }
 
     @Override
@@ -172,6 +202,7 @@ public class SingleGameScreen implements Screen{
         //draw the score hub
         myAM.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
+
     }
 
     private void checkFoodCollision(Snake snake) {
@@ -289,7 +320,9 @@ public class SingleGameScreen implements Screen{
         }
     }
 
-
+    private void speedUp(){
+        System.out.println("button pressed");
+    }
 
     public class FlingDirection implements GestureDetector.GestureListener {
         @Override
@@ -299,27 +332,11 @@ public class SingleGameScreen implements Screen{
 
         @Override
         public boolean tap(float x, float y, int count, int button) {
-            float velocityX = x - mySnake.getHeadPosX();
-            System.out.println("velocity x = "+mySnake.getHeadPosX()+ ", "+x);
-            float velocityY = mySnake.getHeadPosY() - y;
-            System.out.println("velocity y = "+mySnake.getHeadPosY()+ ", "+y);
-            if (stateTimer < 0.5)
-                return false;
-            if (velocityX >= 0 && velocityY >= 0) {
-                directionDegree = 360 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
-                //System.out.println("degree = " + directionDegree);
-            } else if (velocityX >= 0 && velocityY <= 0) {
-                directionDegree = (int)Math.toDegrees(Math.atan(-velocityY / velocityX));
-                //System.out.println("degree = " + directionDegree);
-            } else if (velocityX <= 0 && velocityY >= 0) {
-                directionDegree = (int)Math.toDegrees(Math.atan(-velocityY / velocityX)) + 180;
-                //System.out.println("degree = " + directionDegree);
-            } else {
-                directionDegree = 180 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
-                //System.out.println("degree = " + directionDegree);
+            System.out.println("x = "+x+"; y = "+y);
+            if (x<50 && y > (Gdx.graphics.getHeight() - (Gdx.graphics.getHeight()-960)/2)-50) {
+
+                speedUp();
             }
-            //mySnake.setSettingDirection(directionDegree);
-            System.out.println("TAP called! "+directionDegree);
             return false;
         }
 
