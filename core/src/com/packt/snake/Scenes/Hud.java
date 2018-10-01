@@ -93,7 +93,9 @@ public class Hud implements Disposable{
         //button1.setPosition(960-50,520-50);
         button1.setPosition(0,0);
 
-        Texture texture = new Texture(Gdx.files.internal("speedup.png"));
+        myAm.loadHubResource();
+        myAm.manager.finishLoading();
+        Texture texture = myAm.manager.get(myAm.SPEEDUP);
         Image image1 = new Image(texture);
         image1.setPosition(0,0);
         //table.add(button1).expand().bottom();

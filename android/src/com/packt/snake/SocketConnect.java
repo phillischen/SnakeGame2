@@ -116,33 +116,29 @@ public class SocketConnect extends Thread {
                     System.out.println("thread receive msg: "+message);
                     JSONObject respond = new JSONObject(message);
                     String mtype = respond.getString("type");
-                    if (mtype.equals("move")){
-                        int[] param = myAm.userdata.get(respond.getString("username"));
-                        param[3] = respond.getInt("direction");
-                        myAm.userdata.put(respond.getString("username"),param);
-                    } else if (mtype.equals("join")){ //new user want to join
-                        userlist = userlist + respond.getString("newuser")+"\n";
-                        userarray.add(respond.getString("newuser"));
-                        skinlist = skinlist + respond.getInt("skin");
-                        //skinarray.add(respond.getInt("skin"));
-                    } else if (mtype.equals("ready")){
-                        System.out.println("===========socekt receive: ready");
-                        myAm.play = true;
-                       // start the game
-                    } else if (mtype.equals("quit")){
-                        //System.out.println(respond.getString("username"));
-                        //userlist = userlist.replace(respond.getString("username"),"");
-                        userarray.remove(respond.getString("username"));
-                        userlist = "";
-                        for (String x: userarray){
-                            userlist = userlist+x+"\n";
-                        }
-                        System.out.println("someone quit "+ userlist);
-                    } else if (mtype.equals("ready")){
-                        myAm.play = true;
-                    } else if (mtype.equals("disconnect")){
-                        myAm.disconnect = true;
-                        myAm.disconnectP = respond.getString("username");
+                    switch (mtype){
+                        case "move":
+                            int[] param = myAm.userdata.get(respond.getString("username"));
+                            param[3] = respond.getInt("direction");
+                            myAm.userdata.put(respond.getString("username"),param);
+                            break;
+                        case "join":
+                            userlist = userlist + respond.getString("newuser")+"\n";
+                            userarray.add(respond.getString("newuser"));
+                            skinlist = skinlist + respond.getInt("skin");
+                            break;
+                        case "ready":
+                            System.out.println("===========socekt receive: ready");
+                            myAm.play = true;
+                            break;
+                        case "quit":
+                            userarray.remove(respond.getString("username"));
+                            userlist = "";
+                            for (String x: userarray){
+                                userlist = userlist+x+"\n";
+                            }
+                            System.out.println("someone quit "+ userlist);
+                            break;
                     }
                 } if (quit){
                     //sendQuitRequest();
@@ -172,7 +168,7 @@ public class SocketConnect extends Thread {
                 }
 
             }
-            System.out.println("============break success");
+            //System.out.println("============break success");
             input.close();
             output.close();
             mSocket.close();

@@ -19,6 +19,7 @@ public class MyAssetsManager{
     public final String MAP1 = "border.png";
     public final String SKIN = "skin/comic-ui.json";
     public final String BACKGROUND1 = "bg.png";
+    public final String SPEEDUP = "speedup.png";
 
     //parameters
     public static final int V_WIDTH = 960;
@@ -55,6 +56,10 @@ public class MyAssetsManager{
     public void loadSkin(){
         manager.load(SKIN, Skin.class);
         manager.load(BACKGROUND1,Texture.class);
+    }
+
+    public void loadHubResource(){
+        manager.load(SPEEDUP,Texture.class);
     }
 
     ////////////////parameter modifier////////////////

@@ -328,10 +328,12 @@ public class SingleGameScreen implements Screen{
                         snake.setHeadPosX(snkXB4Update);
                         snake.setHeadPosY(snkYB4Update);
                         myfood.placeFood(snake.getDeadSnake());
+                        hud.updateDead(snake.getMyUsername());
                         snakeList.remove(i);
                     } else {
 //                        snake.updateBodyPartsPosition(snkXB4Update, snkYB4Update);
                         snake.updateBodyPoo(snkXB4Update,snkYB4Update,myfood);
+
                     }
                     checkFoodCollision(snake);
                     myfood.placeFood();
