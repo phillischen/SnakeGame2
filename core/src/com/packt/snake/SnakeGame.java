@@ -2,7 +2,7 @@ package com.packt.snake;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.packt.snake.Screens.GameScreen;
+//import com.packt.snake.Screens.GameScreen;
 import com.packt.snake.Screens.ReadyScreen;
 import com.packt.snake.Screens.SingleGameScreen;
 import com.packt.snake.Screens.WelcomeScreen;

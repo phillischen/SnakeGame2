@@ -15,21 +15,13 @@ import java.util.ArrayList;
 
 
 public class Snake implements Disposable{
-    public static int getInitSize() {
-        return initSize;
-    }
 
     /**---Initialize Parameters---**/
     private static final int initSize = 50;
     private static final int growRatio = 1;
-    private static final int interval = 15;
-
-    public void setStep(int step) {
-        this.step = step;
-    }
-
+//    private static final int interval = 15;
     //    private static final int step = 15;
-    private int step = 15;
+    private int step = 20;
     private static final double maxRotate = 20.0;
 
     private int headPosX = 1000, headPosY = 1000;
@@ -60,7 +52,7 @@ public class Snake implements Disposable{
 
         resizeBody(initSize);
         for(int i=1;i<=3;i++){
-            body.add(new SnakeBody(headPosX -i*interval, headPosY -i*interval));
+            body.add(new SnakeBody(headPosX -i*step, headPosY -i*step));
         }
     }
 
@@ -79,7 +71,7 @@ public class Snake implements Disposable{
 
         resizeBody(initSize);
         for(int i=1;i<=3;i++){
-            body.add(new SnakeBody(this.headPosX -i*interval, this.headPosY -i*interval));
+            body.add(new SnakeBody(this.headPosX -i*step, this.headPosY -i*step));
         }
     }
 
@@ -244,6 +236,14 @@ public class Snake implements Disposable{
         return deadSnake;
     }
 
+//    public void speedUp(boolean isSpeedUp){
+//        if(isSpeedUp){
+//            step = 25;
+//        }else{
+//            step = 15;
+//        }
+//    }
+
     @Override
     public void dispose() {
         headTexture.dispose();
@@ -315,5 +315,9 @@ public class Snake implements Disposable{
 
     public String getMyUsername() {
         return myUsername;
+    }
+
+    public void setStep(int step) {
+        this.step = step;
     }
 }
