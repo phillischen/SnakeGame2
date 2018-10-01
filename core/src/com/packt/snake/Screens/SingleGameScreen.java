@@ -267,8 +267,8 @@ public class SingleGameScreen implements Screen{
 
             int snakeXBeforeUpdate = mySnake.getHeadPosX();
             int snakeYBeforeUpdate = mySnake.getHeadPosY();
-//            mySnake.setSettingDirection(directionDegree);
-            mySnake.setSettingDirection(getGravityDegree(gravityX,gravityY));
+            mySnake.setSettingDirection(directionDegree);
+//            mySnake.setSettingDirection(getGravityDegree(gravityX,gravityY));
             mySnake.moveSnake();
 
             /*---Player Snake-Edge Collision Check---*/
@@ -342,7 +342,7 @@ public class SingleGameScreen implements Screen{
             degree = 180 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
             //System.out.println("degree = " + directionDegree);
         }
-        System.out.println("==============degree = "+degree);
+        //System.out.println("==============degree = "+degree);
         return degree;
     }
 
@@ -369,7 +369,7 @@ public class SingleGameScreen implements Screen{
         @Override
         public boolean tap(float x, float y, int count, int button) {
             System.out.println("x = "+x+"; y = "+y);
-            if (x<50 && y > (Gdx.graphics.getHeight() - (Gdx.graphics.getHeight()-960)/2)-50) {
+            if (x<185 && y > 845) {
 
                 speedUp();
             }
