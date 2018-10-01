@@ -3,6 +3,9 @@ package com.packt.snake;
 import java.util.List;
 import java.util.ArrayList;
 
+import static com.packt.snake.MyAssetsManager.V_HEIGHT;
+import static com.packt.snake.MyAssetsManager.V_WIDTH;
+
 public class AstarAgent {
     private List<AstarMap> openList;
     private List<AstarMap> closeList;
@@ -37,8 +40,9 @@ public class AstarAgent {
                 break;
             }
 
-            List<AstarMap> aroundList = findAround(center);
-            choosePathElement(aroundList, center, end);
+            List<AstarMap> aroundDirectList = findDirectAround(center);
+            List<AstarMap> aroundDiagoiseList = findDirectAround(center);
+            choosePathElement(aroundDirectList, aroundDiagoiseList, center, end);
         }
 
         do {
@@ -52,61 +56,109 @@ public class AstarAgent {
     }
 
 
-    public List<AstarMap> findAround(AstarMap center) {
-        List<AstarMap> aroundList = new ArrayList<AstarMap>();
-        AstarMap cell = null;
+    public List<AstarMap> findDirectAround(AstarMap center) {
+
+        List<AstarMap> aroundDirectList = new ArrayList<AstarMap>();
         int x = center.getX();
         int y = center.getY();
+        AstarMap cell;
 
-        if(x + 1 < 50) {
-            cell = new AstarMap(x+1, y);
+        if(x + 15 < V_WIDTH / 15) {
+            cell = new AstarMap(x+15, y);
             cell.setPrevious(center);
-            aroundList.add(cell);
-
+            aroundDirectList.add(cell);
         }
 
-        if(x - 1 >= 0) {
-            cell = new AstarMap(x-1, y);
+        if(x - 15 >= 0) {
+            cell = new AstarMap(x-15, y);
             cell.setPrevious(center);
-            aroundList.add(cell);
-
+            aroundDirectList.add(cell);
         }
 
-        if(y - 1 >= 0) {
-            cell = new AstarMap(x, y-1);
+        if(y - 15 >= 0) {
+            cell = new AstarMap(x, y-15);
             cell.setPrevious(center);
-            aroundList.add(cell);
-
+            aroundDirectList.add(cell);
         }
 
-        if(y - 1 <50) {
-            cell = new AstarMap(x, y+1);
+        if(y + 15 < V_HEIGHT / 15){
+            cell = new AstarMap(x, y+15);
             cell.setPrevious(center);
-            aroundList.add(cell);
+            aroundDirectList.add(cell);
         }
-
-        return aroundList;
+        return aroundDirectList;
     }
 
-    public void choosePathElement(List<AstarMap> arroundList, AstarMap center, AstarMap end){
-        for(AstarMap element: arroundList) {
+    public List<AstarMap> findDiagnosisAround(AstarMap center) {
+
+        List<AstarMap> aroundDiagnosisList = new ArrayList<AstarMap>();
+        int x = center.getX();
+        int y = center.getY();
+        AstarMap cell;
+
+        if((x - 15 >= 0) && (y - 15 >= 0)){
+            cell = new AstarMap(x-15, y-15);
+            cell.setPrevious(center);
+            aroundDiagnosisList.add(cell);
+        }
+
+        if((x - 15 >= 0) && (y + 15 < V_HEIGHT / 15)) {
+            cell = new AstarMap(x-15, y+15);
+            cell.setPrevious(center);
+            aroundDiagnosisList.add(cell);
+        }
+
+        if((x + 15 < V_WIDTH / 15) && (y + 15 < V_HEIGHT)){
+            cell = new AstarMap(x+15, y+15);
+            cell.setPrevious(center);
+            aroundDiagnosisList.add(cell);
+        }
+
+        if((x + 15 < V_WIDTH / 15) && (y - 15 >= 0)){
+            cell = new AstarMap(x+15, y-15);
+            cell.setPrevious(center);
+            aroundDiagnosisList.add(cell);
+        }
+        return aroundDiagnosisList;
+    }
+
+    public void choosePathElement(List<AstarMap> aroundDirectList, List<AstarMap> aroundDiagnosisList, AstarMap center, AstarMap end){
+        for(AstarMap element: aroundDirectList) {
             if(closeList.contains(element)){
                 continue;
             }
             if (!openList.contains(element)){
-                element.setG(center.getG() + 1);
+                element.setG(center.getG() + 15);
                 element.setH(end);
                 element.setF();
                 openList.add(element);
             }else {
-                if(center.getH() + 1 < center.getH()) {
+                if(center.getH() + 15 < center.getH()) {
                     center.setPrevious(center);
-                    center.setG(center.getG() + 1);
+                    center.setG(center.getG() + 15);
+                }
+            }
+        }
+
+        for(AstarMap element: aroundDiagnosisList) {
+            if(closeList.contains(element)){
+                continue;
+            }
+            if (!openList.contains(element)){
+                element.setG(center.getG() + 21.21); //15 times root(2)
+                element.setH(end);
+                element.setF();
+                openList.add(element);
+            }else {
+                if(center.getH() + 21.21 < center.getH()) {
+                    center.setPrevious(center);
+                    center.setG(center.getG() + 21.21);
                 }
             }
         }
 
     }
+
     public void restart(){
         openList.removeAll(openList);
         closeList.removeAll(closeList);
@@ -115,5 +167,3 @@ public class AstarAgent {
 
 
 }
-
-
