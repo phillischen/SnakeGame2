@@ -68,7 +68,7 @@ public class SingleGameScreen implements Screen{
         this.game = game;
         myAM = this.game.getAm();
         myfood = new Food(this.game);
-
+        mySnake = new Snake(this.game);
 
         snakeList.add(new Snake(this.game,200,200,"AI"));
 //        snakeList.add(new Snake(this.game,400,600,"AI2"));
@@ -269,8 +269,12 @@ public class SingleGameScreen implements Screen{
             ArrayList<Snake> allSnakes = new ArrayList<Snake>(snakeList);
             allSnakes.add(mySnake);
 
-
-            int speedLimit = 1+myAM.userdata.get(mySnake.getMyUsername())[1];
+            int speedLimit = 1;
+            if(myAM.userdata.get(mySnake.getMyUsername())[1] == 1){
+                if(mySnake.getBody().size > 3){
+                    speedLimit = 1+myAM.userdata.get(mySnake.getMyUsername())[1];
+                }
+            }
 
             mySnake.setSettingDirection(directionDegree);
 //            mySnake.setSettingDirection(getGravityDegree(gravityX,gravityY));
@@ -296,8 +300,8 @@ public class SingleGameScreen implements Screen{
                     mySnake.setHeadPosY(snakeYBeforeUpdate);
                     myfood.placeFood(mySnake.getDeadSnake());
                 } else {
-//                    mySnake.updateBodyPartsPosition(snakeXBeforeUpdate, snakeYBeforeUpdate, myfood);
-                    mySnake.updateBodyPartsPosition(snakeXBeforeUpdate, snakeYBeforeUpdate);
+                    mySnake.updateBodyPoo(snakeXBeforeUpdate, snakeYBeforeUpdate, myfood);
+//                    mySnake.updateBodyPartsPosition(snakeXBeforeUpdate, snakeYBeforeUpdate);
                 }
             }
 
@@ -305,7 +309,14 @@ public class SingleGameScreen implements Screen{
             /*---AI Update---*/
             for (int i = snakeList.size()-1;i>=0;i--){
                 Snake snake = snakeList.get(i);
+
                 speedLimit = myAM.userdata.get(snake.getMyUsername())[1]+1;
+                if(myAM.userdata.get(snake.getMyUsername())[1] == 1){
+                    if(snake.getBody().size > 3){
+                        speedLimit = 1+myAM.userdata.get(snake.getMyUsername())[1];
+                    }
+                }
+
                 for(int j=0;j<speedLimit;j++) {
                     int snkXB4Update = snake.getHeadPosX();
                     int snkYB4Update = snake.getHeadPosY();
@@ -319,7 +330,8 @@ public class SingleGameScreen implements Screen{
                         myfood.placeFood(snake.getDeadSnake());
                         snakeList.remove(i);
                     } else {
-                        snake.updateBodyPartsPosition(snkXB4Update, snkYB4Update);
+//                        snake.updateBodyPartsPosition(snkXB4Update, snkYB4Update);
+                        snake.updateBodyPoo(snkXB4Update,snkYB4Update,myfood);
                     }
                     checkFoodCollision(snake);
                     myfood.placeFood();

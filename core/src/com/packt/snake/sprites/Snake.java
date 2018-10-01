@@ -19,7 +19,7 @@ public class Snake implements Disposable{
     /**---Initialize Parameters---**/
     private static final int initSize = 50;
     private static final int growRatio = 1;
-//    private static final int interval = 15;
+    private static final int pooInterval = 10;
     //    private static final int step = 15;
     private int step = 20;
     private static final double maxRotate = 20.0;
@@ -36,7 +36,7 @@ public class Snake implements Disposable{
     private int size = 50;
     private SnakeGame game;
     private String myUsername;
-
+    private int pooCounter = pooInterval;
 
 
     private MyAssetsManager myAm;
@@ -110,19 +110,23 @@ public class Snake implements Disposable{
         }
     }
 
-//    public void updateBodyPartsPosition(int headXBeforeUpdate,int headYBeforeUpdate, Food myFood){
-//        if(body.size >= 3){
-//            body.removeIndex(body.size-1);
-//            if(myAm.userdata.get(myUsername)[1] == 1 && body.size >= 3){
-//                int foodX = body.get(body.size-1).getX();
-//                int foodY = body.get(body.size-1).getY();
-//                myFood.placeFoodAt(foodX,foodY);
-//                body.removeIndex(body.size-1);
-//            }
-//            SnakeBody tempPart = new SnakeBody(headXBeforeUpdate,headYBeforeUpdate);
-//            body.insert(0,tempPart);
-//        }
-//    }
+    public void updateBodyPoo(int headXBeforeUpdate,int headYBeforeUpdate, Food myFood){
+        if(body.size >= 3){
+            body.removeIndex(body.size-1);
+            if(myAm.userdata.get(myUsername)[1] == 1 && body.size >= 3){
+                pooCounter--;
+                if(pooCounter == 0) {
+                    int foodX = body.get(body.size - 1).getX();
+                    int foodY = body.get(body.size - 1).getY();
+                    myFood.placeFoodAt(foodX, foodY);
+                    body.removeIndex(body.size - 1);
+                    pooCounter = pooInterval;
+                }
+            }
+            SnakeBody tempPart = new SnakeBody(headXBeforeUpdate,headYBeforeUpdate);
+            body.insert(0,tempPart);
+        }
+    }
 
 
     public void drawSnake(SpriteBatch sb){
@@ -251,13 +255,6 @@ public class Snake implements Disposable{
         return deadSnake;
     }
 
-//    public void speedUp(boolean isSpeedUp){
-//        if(isSpeedUp){
-//            step = 25;
-//        }else{
-//            step = 15;
-//        }
-//    }
 
     @Override
     public void dispose() {
