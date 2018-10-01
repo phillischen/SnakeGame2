@@ -104,8 +104,7 @@ public class SingleGameScreen implements Screen{
         bitmapFont = new BitmapFont();
         myFlingDirection = new FlingDirection();
         Gdx.input.setInputProcessor(new GestureDetector(myFlingDirection));
-        gravityY = Gdx.input.getAccelerometerY();
-        gravityX = Gdx.input.getAccelerometerX();
+
 
     }
 
@@ -343,13 +342,15 @@ public class SingleGameScreen implements Screen{
             degree = 180 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
             //System.out.println("degree = " + directionDegree);
         }
+        System.out.println("==============degree = "+degree);
         return degree;
     }
 
     public int getGravityDegree(float gravityX, float gravityY){
-        float myX = -gravityY;
-        float myY = gravityX;
 
+        float myX = Gdx.input.getAccelerometerY();
+        float myY = Gdx.input.getAccelerometerX();
+        //System.out.println("X = "+myX+"; Y = "+myY);
         int degree = computeDirectionDegree(myX,myY);
         directionDegree = degree;
         return degree;

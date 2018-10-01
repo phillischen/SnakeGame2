@@ -32,7 +32,7 @@ public class Snake implements Disposable{
     private int step = 15;
     private static final double maxRotate = 20.0;
 
-    private int headPosX = 100, headPosY = 100;
+    private int headPosX = 1000, headPosY = 1000;
 
     private Array<SnakeBody> body = new Array<SnakeBody>();
     private Texture headTexture;
