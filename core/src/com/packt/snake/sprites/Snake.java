@@ -21,10 +21,11 @@ public class Snake implements Disposable{
 
     /**---Initialize Parameters---**/
     private static final int initSize = 50;
-    private static final int growRatio = 50;
+    private static final int growRatio = 1;
     private static final int interval = 15;
     private static final int step = 15;
     private static final double maxRotate = 20.0;
+    private static final int plusScore = 10;
 
     private int headPosX = 100, headPosY = 100;
 
@@ -39,6 +40,7 @@ public class Snake implements Disposable{
     private int size = 50;
     private SnakeGame game;
     private String myUsername;
+
 
 
     private MyAssetsManager myAm;
@@ -128,10 +130,6 @@ public class Snake implements Disposable{
         double deviation = settingDirection - currentDirection;
         double deltaX;
         double deltaY;
-        //System.out.println("settingDirection "+settingDirection);
-        //System.out.println("currentDirection "+currentDirection);
-        //System.out.print("deviation ");
-       // System.out.println(deviation);
         if(Math.abs(deviation) <= maxRotate){
             deltaX = step*Math.cos(settingDirection/180*Math.PI);
             deltaY = step*Math.sin(settingDirection/180*Math.PI);
@@ -209,6 +207,7 @@ public class Snake implements Disposable{
 
     private void resizeBody(int size){
         Pixmap pixmapOrigin = new Pixmap(Gdx.files.internal("snakehead.png"));
+//        Pixmap pixmapOrigin = new Pixmap(myAm.loadSkin());
 
         Pixmap newPixmap = new Pixmap(size, size, pixmapOrigin.getFormat());
         newPixmap.drawPixmap(pixmapOrigin,
@@ -260,7 +259,7 @@ public class Snake implements Disposable{
     }
 
     public void updateSize(){
-        size = initSize + this.score/growRatio;
+        size = initSize + body.size;
         resizeBody(size);
     }
 

@@ -59,7 +59,6 @@ public class MyAssetsManager{
 
     ////////////////parameter modifier////////////////
     public void addScore(String name){
-
         int[] param = userdata.get(name);
         param[2] = param[2]+POINTS_PER_FOOD;
         userdata.put(name,param);

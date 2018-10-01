@@ -8,6 +8,7 @@ import com.packt.snake.SnakeGame;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 
 public class Food implements Disposable{
@@ -48,7 +49,9 @@ public class Food implements Disposable{
 
     public void placeFood(ArrayList<Array<Integer>> deadSnake){
         for(Array<Integer> pos : deadSnake){
-            int[] foodPos = {pos.get(0),pos.get(1)};
+            Random randomX = new Random();
+            Random randomY = new Random();
+            int[] foodPos = {pos.get(0)+randomX.nextInt(50),pos.get(1)+randomY.nextInt(50)};
             foodlist.add(foodPos);
         }
     }
