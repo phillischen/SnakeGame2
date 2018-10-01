@@ -30,7 +30,14 @@ public class Score_Activity extends AppCompatActivity {
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //do sth to share
+                Intent myIntent = new Intent(Intent.ACTION_SEND);
+                myIntent.setType("text/plain");
+                String shareBody = "Hey guys I've got xx score on Slither Game! Awesome!";
+                String shareSub = "Slither Game Score!";
+                myIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
+                myIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(myIntent, "Share using"));
+
             }
         });
 
