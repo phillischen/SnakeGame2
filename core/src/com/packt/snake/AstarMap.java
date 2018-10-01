@@ -66,4 +66,19 @@ public class AstarMap {
         return previous;
     }
 
+    //overwrite equal methods, so move deletes 2 nodes when deletes and end node.
+    public boolean equals(Object obj){
+        if(this == obj){
+            return true;
+        }
+
+        if(obj instanceof AstarMap) {
+            AstarMap node = (AstarMap) obj;
+            if(this.x == node.x && this.y == node.y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
