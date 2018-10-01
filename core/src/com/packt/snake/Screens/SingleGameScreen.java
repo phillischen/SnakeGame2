@@ -250,6 +250,7 @@ public class SingleGameScreen implements Screen{
             if(state == STATE.GAME_OVER){
                 mySnake.setHeadPosX(snakeXBeforeUpdate);
                 mySnake.setHeadPosY(snakeYBeforeUpdate);
+                myfood.placeFood(mySnake.getDeadSnake());
             }else{
                 mySnake.updateBodyPartsPosition(snakeXBeforeUpdate,snakeYBeforeUpdate);
             }
@@ -263,13 +264,10 @@ public class SingleGameScreen implements Screen{
                         FindNearestFood(snkXB4Update,snkYB4Update,myfood.getFoodlist())
                         );
                 snake.moveSnake();
-                if(snake.checkEdge()){
+                if(snake.checkEdge() || bodyCollision(snake,i,allSnakes)){
                     snake.setHeadPosX(snakeXBeforeUpdate);
                     snake.setHeadPosY(snakeYBeforeUpdate);
-                    snakeList.remove(i);
-                }else if(bodyCollision(snake,i,allSnakes)){
-                    snake.setHeadPosX(snakeXBeforeUpdate);
-                    snake.setHeadPosY(snakeYBeforeUpdate);
+                    myfood.placeFood(snake.getDeadSnake());
                     snakeList.remove(i);
                 }else{
                     snake.updateBodyPartsPosition(snkXB4Update,snkYB4Update);

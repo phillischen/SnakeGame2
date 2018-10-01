@@ -1,8 +1,7 @@
 package com.packt.snake.sprites;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.packt.snake.MyAssetsManager;
 import com.packt.snake.SnakeGame;
@@ -14,7 +13,6 @@ import java.util.Arrays;
 public class Food implements Disposable{
     private Texture food,background;
     private ArrayList<int[]> foodlist = new ArrayList<int[]>();
-    private int foodX, foodY;
     private static final int padding = 300;
     private java.util.Random randomX = new java.util.Random(1);
     private java.util.Random randomY = new java.util.Random(1);
@@ -33,24 +31,25 @@ public class Food implements Disposable{
         maxHeigh = background.getHeight() - padding;
         food = new Texture("apple.png");
         placeFood();
-
     }
 
     public void placeFood(){ //randomly put food on screen
         if (foodlist.size()<20){ //no food no screen
             do{
                 //need to change to unified canvas size
-//                foodX = randomX.nextInt() + padding;
-//                foodY = randomY.nextInt() + padding;
-                foodX = padding+randomX.nextInt(maxWidth);
-                foodY = padding+randomY.nextInt(maxHeigh);
-                System.out.print(foodX+"  ");
-                System.out.print(foodY);
-                System.out.println();
+                int foodX = padding+randomX.nextInt(maxWidth);
+                int foodY = padding+randomY.nextInt(maxHeigh);
                 //need a method to avoid food on snake!!
                 int[] x = {foodX,foodY};
                 foodlist.add(x);
             }while (foodlist.size() < 20);
+        }
+    }
+
+    public void placeFood(ArrayList<Array<Integer>> deadSnake){
+        for(Array<Integer> pos : deadSnake){
+            int[] foodPos = {pos.get(0),pos.get(1)};
+            foodlist.add(foodPos);
         }
     }
 

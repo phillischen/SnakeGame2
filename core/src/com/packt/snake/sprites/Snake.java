@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.packt.snake.MyAssetsManager;
 import com.packt.snake.SnakeGame;
 
+import java.util.ArrayList;
+
 
 public class Snake implements Disposable{
     public static int getInitSize() {
@@ -224,6 +226,21 @@ public class Snake implements Disposable{
         bodyTexture = new Texture(newPixmap);
         pixmapOrigin.dispose();
         newPixmap.dispose();
+    }
+
+    public ArrayList<Array<Integer>> getDeadSnake(){
+        ArrayList<Array<Integer>> deadSnake = new ArrayList<Array<Integer>>();
+        Array<Integer> headPos = new Array<Integer>();
+        headPos.add(headPosX);
+        headPos.add(headPosX);
+        deadSnake.add(headPos);
+        for (SnakeBody sb: body){
+            Array<Integer> nodePos = new Array<Integer>();
+            nodePos.add(sb.x);
+            nodePos.add(sb.y);
+            deadSnake.add(nodePos);
+        }
+        return deadSnake;
     }
 
     @Override
