@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.packt.snake.MyAssetsManager;
@@ -59,7 +60,11 @@ public class SingleGameScreen implements Screen{
         myAM = this.game.getAm();
         myfood = new Food(this.game);
         mySnake = new Snake(this.game);
-        snakeList.add(new Snake(this.game,1100,1100,"AI"));
+        snakeList.add(new Snake(this.game,200,200,"AI"));
+        snakeList.add(new Snake(this.game,400,600,"AI"));
+        snakeList.add(new Snake(this.game,500,700,"AI"));
+        snakeList.add(new Snake(this.game,800,900,"AI"));
+
 
         viewport = new FitViewport(myAM.V_WIDTH, myAM.V_HEIGHT);
         camera = new OrthographicCamera(screenWidth, screenHeight);
@@ -126,7 +131,7 @@ public class SingleGameScreen implements Screen{
         switch (state) {
             case NORMAL: {
 //                queryInput();
-                updateSnake(delta);
+                updateAllSnakes(delta);
             }
             break;
             case GAME_OVER: {
@@ -171,23 +176,17 @@ public class SingleGameScreen implements Screen{
 
     private void checkFoodCollision(Snake snake) {
         int[] head = {snake.getHeadPosX(), snake.getHeadPosY()};
-        //Gdx.app.log("MYTAG","head = "+Arrays.toString(head));
         if (checkContain(myfood.getFoodlist(), head)) {
-            //Gdx.app.log("MYTAG","yes, hit the food!");
             snake.lengthenBody(head[0], head[1]);
             snake.updateScore();
         }
     }
 
     private boolean checkContain(ArrayList<int[]> al, int[] lst) {
-//        Gdx.app.log("al",al.toString());
-//        Gdx.app.log("lst",lst.toString());
         for (int[] x : al) {
-            float collisionRadius = (x[0] - lst[0]) * (x[0] - lst[0]) + (x[1] - lst[1]) * (x[1] - lst[1]);
-            //Gdx.app.log("collisionRadius", "asd");
-            if (collisionRadius <= (mySnake.getSize()/2+16)*(mySnake.getSize()/2+16)) {
-//            if (x == lst){
-//                print
+            double collisionRadius = distance(x[0],x[1],lst[0],lst[1]);
+            double foodRadius = 16;
+            if (collisionRadius <= (mySnake.getSize()/2+foodRadius)) {
                 myfood.removeFood(x);
                 return true;
             }
@@ -224,7 +223,7 @@ public class SingleGameScreen implements Screen{
         return directionDeg;
     }
 
-    private void updateSnake(float delta){
+    private void updateAllSnakes(float delta){
         timer-=delta;
         if(timer<=0){
             timer=speed;
@@ -234,30 +233,44 @@ public class SingleGameScreen implements Screen{
             mySnake.setSettingDirection(directionDegree);
             mySnake.moveSnake();
 
-            if (mySnake.checkEdge()){
-                mySnake.setHeadPosX(snakeXBeforeUpdate);
-                mySnake.setHeadPosY(snakeYBeforeUpdate);
-                state = STATE.GAME_OVER;
-            } else {
-                mySnake.updateBodyPartsPosition(snakeXBeforeUpdate,snakeYBeforeUpdate);
-            }
+            /*---Player Snake-Edge Collision Check---*/
+            if (mySnake.checkEdge())state = STATE.GAME_OVER;
 
+            /*---Player Snake-Food Eating Check---*/
             checkFoodCollision(mySnake);
             myfood.placeFood();
             mySnake.updateSize();
 
+            /*---Player Snake-Other Snakes Collision Check---*/
+            ArrayList<Snake> allSnakes = new ArrayList<Snake>(snakeList);
+            allSnakes.add(mySnake);
+            boolean isBodyCollision = bodyCollision(mySnake,allSnakes.size()-1,allSnakes);
+            if(isBodyCollision)state = STATE.GAME_OVER;
+
+            if(state == STATE.GAME_OVER){
+                mySnake.setHeadPosX(snakeXBeforeUpdate);
+                mySnake.setHeadPosY(snakeYBeforeUpdate);
+            }else{
+                mySnake.updateBodyPartsPosition(snakeXBeforeUpdate,snakeYBeforeUpdate);
+            }
+
+            /*---AI Update---*/
             for (int i = snakeList.size()-1;i>=0;i--){
                 Snake snake = snakeList.get(i);
                 int snkXB4Update = snake.getHeadPosX();
-                int snkYB4Update = snake .getHeadPosY();
+                int snkYB4Update = snake.getHeadPosY();
                 snake.setSettingDirection(
-                        FindNearestFood(snkXB4Update,snkYB4Update,myfood.getFoodlist()));
+                        FindNearestFood(snkXB4Update,snkYB4Update,myfood.getFoodlist())
+                        );
                 snake.moveSnake();
                 if(snake.checkEdge()){
                     snake.setHeadPosX(snakeXBeforeUpdate);
                     snake.setHeadPosY(snakeYBeforeUpdate);
-                    snakeList.remove(i);//really needed?
-                    state = STATE.GAME_OVER;
+                    snakeList.remove(i);
+                }else if(bodyCollision(snake,i,allSnakes)){
+                    snake.setHeadPosX(snakeXBeforeUpdate);
+                    snake.setHeadPosY(snakeYBeforeUpdate);
+                    snakeList.remove(i);
                 }else{
                     snake.updateBodyPartsPosition(snkXB4Update,snkYB4Update);
                 }
@@ -366,6 +379,27 @@ public class SingleGameScreen implements Screen{
         }
 
 
+    }
+
+    public double distance(double x1, double y1, double x2, double y2){
+        return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+    }
+
+    public boolean bodyCollision(Snake mySnake,int myIndex, ArrayList<Snake> snakeList){
+
+        for(int i = 0;i<snakeList.size();i++){
+            if(myIndex == i)continue;
+            Snake snake = snakeList.get(i);
+            Array<Snake.SnakeBody> snakeBody = snake.getBody();
+            for(Snake.SnakeBody sb:snakeBody){
+                if(distance(mySnake.getHeadPosX(),mySnake.getHeadPosY(), sb.getX(),sb.getY())
+                        < (snake.getSize()/2+mySnake.getSize()/2)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 }

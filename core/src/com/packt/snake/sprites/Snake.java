@@ -75,7 +75,7 @@ public class Snake implements Disposable{
         }
     }
 
-    private class SnakeBody {
+    public class SnakeBody {
         private int x, y;
         //private Texture texture = new Texture("snake.png");
 
@@ -91,6 +91,14 @@ public class Snake implements Disposable{
         public void draw(Batch batch){
             if (!(x == headPosX && y == headPosY))
                 batch.draw(bodyTexture, x, y);
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
         }
     }
 
