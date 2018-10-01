@@ -23,16 +23,20 @@ public class Snake implements Disposable{
     private static final int initSize = 50;
     private static final int growRatio = 1;
     private static final int interval = 15;
-    private static final int step = 15;
+
+    public void setStep(int step) {
+        this.step = step;
+    }
+
+    //    private static final int step = 15;
+    private int step = 15;
     private static final double maxRotate = 20.0;
-    private static final int plusScore = 10;
 
     private int headPosX = 100, headPosY = 100;
 
     private Array<SnakeBody> body = new Array<SnakeBody>();
     private Texture headTexture;
     private Texture bodyTexture;
-    private boolean directionSet = false;
 
     private double currentDirection = 0.0;
     private double settingDirection = 0.0;
@@ -200,14 +204,12 @@ public class Snake implements Disposable{
     public void restartSnake(){
         body.clear();
         currentDirection = 0.0;
-        directionSet = false;
         headPosX = 0;
         headPosY = 0;
     }
 
     private void resizeBody(int size){
         Pixmap pixmapOrigin = new Pixmap(Gdx.files.internal("snakehead.png"));
-//        Pixmap pixmapOrigin = new Pixmap(myAm.loadSkin());
 
         Pixmap newPixmap = new Pixmap(size, size, pixmapOrigin.getFormat());
         newPixmap.drawPixmap(pixmapOrigin,
@@ -309,10 +311,6 @@ public class Snake implements Disposable{
 
     public Array<SnakeBody> getBody() {
         return body;
-    }
-
-    public void setDirectionSet(boolean directionSet) {
-        this.directionSet = directionSet;
     }
 
     public String getMyUsername() {

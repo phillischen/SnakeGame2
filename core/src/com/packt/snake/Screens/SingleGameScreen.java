@@ -63,6 +63,9 @@ public class SingleGameScreen implements Screen{
     private Stage myStage;
     private Skin mySkin;
 
+    private float gravityX;
+    private float gravityY;
+
     public SingleGameScreen(SnakeGame game) {
         this.game = game;
         myAM = this.game.getAm();
@@ -73,6 +76,7 @@ public class SingleGameScreen implements Screen{
         snakeList.add(new Snake(this.game,500,700,"AI"));
         snakeList.add(new Snake(this.game,800,900,"AI"));
 
+//        mySnake.setStep(25);
 
         viewport = new FitViewport(myAM.V_WIDTH, myAM.V_HEIGHT);
         camera = new OrthographicCamera(screenWidth, screenHeight);
@@ -100,6 +104,9 @@ public class SingleGameScreen implements Screen{
         bitmapFont = new BitmapFont();
         myFlingDirection = new FlingDirection();
         Gdx.input.setInputProcessor(new GestureDetector(myFlingDirection));
+        gravityY = Gdx.input.getAccelerometerY();
+        gravityX = Gdx.input.getAccelerometerX();
+
     }
 
     private void addButton(){
@@ -261,7 +268,8 @@ public class SingleGameScreen implements Screen{
 
             int snakeXBeforeUpdate = mySnake.getHeadPosX();
             int snakeYBeforeUpdate = mySnake.getHeadPosY();
-            mySnake.setSettingDirection(directionDegree);
+//            mySnake.setSettingDirection(directionDegree);
+            mySnake.setSettingDirection(getGravityDegree(gravityX,gravityY));
             mySnake.moveSnake();
 
             /*---Player Snake-Edge Collision Check---*/
@@ -320,6 +328,33 @@ public class SingleGameScreen implements Screen{
         }
     }
 
+    public int computeDirectionDegree(float velocityX ,float velocityY){
+        int degree;
+        if (velocityX >= 0 && velocityY >= 0) {
+            degree = 360 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
+            //System.out.println("degree = " + directionDegree);
+        } else if (velocityX >= 0 && velocityY <= 0) {
+            degree = (int)Math.toDegrees(Math.atan(-velocityY / velocityX));
+            //System.out.println("degree = " + directionDegree);
+        } else if (velocityX <= 0 && velocityY >= 0) {
+            degree = (int)Math.toDegrees(Math.atan(-velocityY / velocityX)) + 180;
+            //System.out.println("degree = " + directionDegree);
+        } else {
+            degree = 180 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
+            //System.out.println("degree = " + directionDegree);
+        }
+        return degree;
+    }
+
+    public int getGravityDegree(float gravityX, float gravityY){
+        float myX = -gravityY;
+        float myY = gravityX;
+
+        int degree = computeDirectionDegree(myX,myY);
+        directionDegree = degree;
+        return degree;
+    }
+
     private void speedUp(){
         System.out.println("button pressed");
     }
@@ -375,26 +410,14 @@ public class SingleGameScreen implements Screen{
             //System.out.println("fling called!");
             if (stateTimer < 0.5)
                 return false;
-            if (velocityX >= 0 && velocityY >= 0) {
-                directionDegree = 360 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
-                //System.out.println("degree = " + directionDegree);
-            } else if (velocityX >= 0 && velocityY <= 0) {
-                directionDegree = (int)Math.toDegrees(Math.atan(-velocityY / velocityX));
-                //System.out.println("degree = " + directionDegree);
-            } else if (velocityX <= 0 && velocityY >= 0) {
-                directionDegree = (int)Math.toDegrees(Math.atan(-velocityY / velocityX)) + 180;
-                //System.out.println("degree = " + directionDegree);
-            } else {
-                directionDegree = 180 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
-                //System.out.println("degree = " + directionDegree);
-            }
+            directionDegree = computeDirectionDegree(velocityX,velocityY);
             //mySnake.setSettingDirection(directionDegree);
             System.out.println("fling called! "+directionDegree);
             return false;
         }
-
-
     }
+
+
 
     public double distance(double x1, double y1, double x2, double y2){
         return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
@@ -416,6 +439,8 @@ public class SingleGameScreen implements Screen{
 
         return false;
     }
+
+
 
 }
 
