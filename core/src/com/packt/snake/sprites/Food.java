@@ -8,10 +8,17 @@ import com.badlogic.gdx.utils.Disposable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static sun.misc.Version.print;
+
 public class Food implements Disposable{
     private Texture food;
     private ArrayList<int[]> foodlist = new ArrayList<int[]>();
     private int foodX, foodY;
+    private static final int padding = 300;
+    private java.util.Random randomX = new java.util.Random(1);
+    private java.util.Random randomY = new java.util.Random(1);
+    private static final int maxWidth = Gdx.graphics.getWidth() - padding;
+    private static final int maxHeigh = Gdx.graphics.getHeight() - padding;
 
     public Food (){
         food = new Texture("apple.png");
@@ -22,16 +29,17 @@ public class Food implements Disposable{
         if (foodlist.size()<20){ //no food no screen
             do{
                 //need to change to unified canvas size
-                foodX = 50 + MathUtils.random(Gdx.graphics.getWidth()-50);
-                foodY = 50 + MathUtils.random(Gdx.graphics.getHeight()-50);
+//                foodX = randomX.nextInt() + padding;
+//                foodY = randomY.nextInt() + padding;
+                foodX = padding+randomX.nextInt(maxWidth);
+                foodY = padding+randomY.nextInt(maxHeigh);
+                System.out.print(foodX+"  ");
+                System.out.print(foodY);
+                System.out.println();
                 //need a method to avoid food on snake!!
                 int[] x = {foodX,foodY};
                 foodlist.add(x);
-                //Gdx.app.log("MYTAG", Arrays.toString(x));
-            }while (foodlist.size() < 10);
-            //for (int[] xx: foodlist){
-            //    Gdx.app.log("MYTAG", Arrays.toString(xx));
-            //}
+            }while (foodlist.size() < 20);
         }
     }
 
