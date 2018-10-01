@@ -22,6 +22,7 @@ import com.packt.snake.MyAssetsManager;
 import com.packt.snake.SnakeGame;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +40,9 @@ public class Hud implements Disposable{
     private ArrayList<Label> nameLabelList = new ArrayList<Label>();
     private ArrayList<Label> scoreLabelList = new ArrayList<Label>();
     private ArrayList<String> nameList = new ArrayList<String>();
-    private ArrayList<Integer> deadlist = new ArrayList<Integer>();
+    private ArrayList<String> deadlist = new ArrayList<String>();
+    private ArrayList<scorerow> rowlist = new ArrayList<scorerow>();
+    private Table table;
 
     //Label scoreLable;
     //Label snakeLabel;
@@ -66,21 +69,23 @@ public class Hud implements Disposable{
     }
 
     private void setupScoreBand(){
-        Table table = new Table();//organize things in stage
-        table.top().right();
+        table = new Table();//organize things in stage
+        table.top().right().padRight(20);
         table.setFillParent(true);//set table the same size of stage
 
         for (Map.Entry<String, int[]> entry : myAm.userdata.entrySet()) {
             Label nameLabel = new Label(entry.getKey(),myskin,"big");
-            nameList.add(entry.getKey());
-            nameLabelList.add(nameLabel);
+            //nameList.add(entry.getKey());
+            //nameLabelList.add(nameLabel);
 
             Label scoreLable = new Label(String.format("%06d",0),myskin,"big");
             //Object value = entry.getValue();
-            scoreLabelList.add(scoreLable);
-            table.add(nameLabel).expandX().right().padRight(5);
-            table.add(scoreLable).expandX().right().padRight(20);
+            //scoreLabelList.add(scoreLable);
+            table.add(nameLabel).expandX();
+            table.add(scoreLable).expandX();
             table.row();
+
+            rowlist.add(new scorerow(entry.getKey(),entry.getValue()[2]));
         }
 
         Button button1 = new TextButton("GO",myskin);
@@ -98,39 +103,72 @@ public class Hud implements Disposable{
         stage.addActor(table);
     }
 
-    private void setupButton(){
-
-
-        //stage.addActor(button1);
-    }
-
     public void updateScore(){
         if (myAm.disconnect){
-            for (int i = 0; i < nameList.size(); i++){
-                if (nameList.get(i).equals(myAm.disconnectP)){
-                    Label scoreLabel = scoreLabelList.get(i);
-                    scoreLabel.setText(String.format("Disconnected"));
-                    deadlist.add(i);
+            System.out.println("==============hud know disconnect = "+myAm.disconnectP);
+            for (int i = 0; i < rowlist.size(); i++){
+                scorerow row = rowlist.get(i);
+                System.out.println("row name = "+row.name);
+                if (row.name.equals(myAm.disconnectP)){
+                    row.score = -2;
+                    rowlist.set(i,row);
                     myAm.disconnect = false;
+                    break;
                 }
             }
         }
-        for (int i = 0; i < nameList.size(); i++){
-            int newscore = myAm.userdata.get(nameList.get(i))[2];
-            Label scoreLabel = scoreLabelList.get(i);
-            if (!deadlist.contains(i))
-                scoreLabel.setText(String.format("%06d",newscore));
+        for (int i = 0; i < rowlist.size(); i++){
+            scorerow row = rowlist.get(i);
+            if (row.score >= 0)
+                row.score = myAm.userdata.get(row.name)[2];
         }
-        //System.out.println("update score = "+this.score);
+        Collections.sort(rowlist);
+        table.clearChildren();
+        for (int i = 0; i < rowlist.size(); i++){
+            scorerow row = rowlist.get(i);
+            Label nameLabel = new Label(row.name,myskin,"big");
+            table.add(nameLabel).expandX();
+            Label scoreLable;
+            if (row.score == -1){
+                scoreLable = new Label("DEAD",myskin,"big");
+            } else if (row.score == -2){
+                scoreLable = new Label("DISCONNECT",myskin,"big");
+            } else {
+                scoreLable = new Label(String.format("%06d",row.score),myskin,"big");
+            }
+            table.add(scoreLable).expandX();
+            table.row();
+
+        }
+
     }
 
     public void updateDead(String name){
-        for (int i = 0; i < nameList.size(); i++){
-            if (nameList.get(i).equals(name)){
-                Label scoreLabel = scoreLabelList.get(i);
-                scoreLabel.setText(String.format("DEAD"));
-                deadlist.add(i);
+        for (int i = 0; i < rowlist.size(); i++){
+            scorerow row = rowlist.get(i);
+            if (row.name.equals(name)){
+                row.score = -1;
+                rowlist.set(i,row);
             }
+        }
+    }
+
+    private class scorerow implements Comparable<scorerow>{
+        String name;
+        int score;
+
+        scorerow (String n, int s){
+            this.name = n;
+            this.score = s;
+        }
+
+        void setRowDead(){
+            this.score = -1;
+        }
+
+        @Override
+        public int compareTo(scorerow row) {
+            return row.score - this.score ;
         }
     }
 

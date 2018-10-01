@@ -24,7 +24,7 @@ public class MultiGameScreen implements Screen{
 
     private static final float MOVE_TIME = 0.03F;
 
-    private static float speed = 0.02f;
+    private static float speed = 0.1f;
     private float timer = speed;
     private static final float roomOutRatio = 0.2f;
 
