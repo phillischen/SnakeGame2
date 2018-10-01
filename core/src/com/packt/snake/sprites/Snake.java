@@ -103,12 +103,27 @@ public class Snake implements Disposable{
     }
 
     public void updateBodyPartsPosition(int headXBeforeUpdate,int headYBeforeUpdate){
-        if(body.size > 0){
+        if(body.size >= 3){
             body.removeIndex(body.size-1);
             SnakeBody tempPart = new SnakeBody(headXBeforeUpdate,headYBeforeUpdate);
             body.insert(0,tempPart);
         }
     }
+
+//    public void updateBodyPartsPosition(int headXBeforeUpdate,int headYBeforeUpdate, Food myFood){
+//        if(body.size >= 3){
+//            body.removeIndex(body.size-1);
+//            if(myAm.userdata.get(myUsername)[1] == 1 && body.size >= 3){
+//                int foodX = body.get(body.size-1).getX();
+//                int foodY = body.get(body.size-1).getY();
+//                myFood.placeFoodAt(foodX,foodY);
+//                body.removeIndex(body.size-1);
+//            }
+//            SnakeBody tempPart = new SnakeBody(headXBeforeUpdate,headYBeforeUpdate);
+//            body.insert(0,tempPart);
+//        }
+//    }
+
 
     public void drawSnake(SpriteBatch sb){
         for(int i = body.size-1;i>=0;i--){

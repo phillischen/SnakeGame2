@@ -29,8 +29,6 @@ import java.util.ArrayList;
 
 public class SingleGameScreen implements Screen{
 
-    private static final float MOVE_TIME = 0.03F;
-
     private static float speed = 0.08f;
     private float timer = speed;
     private static final float roomOutRatio = 0.2f;
@@ -70,13 +68,12 @@ public class SingleGameScreen implements Screen{
         this.game = game;
         myAM = this.game.getAm();
         myfood = new Food(this.game);
-        mySnake = new Snake(this.game);
-        snakeList.add(new Snake(this.game,200,200,"AI"));
-        snakeList.add(new Snake(this.game,400,600,"AI"));
-        snakeList.add(new Snake(this.game,500,700,"AI"));
-        snakeList.add(new Snake(this.game,800,900,"AI"));
 
-//        mySnake.setStep(25);
+
+        snakeList.add(new Snake(this.game,200,200,"AI"));
+//        snakeList.add(new Snake(this.game,400,600,"AI2"));
+//        snakeList.add(new Snake(this.game,500,700,"AI3"));
+//        snakeList.add(new Snake(this.game,800,900,"AI4"));
 
         viewport = new FitViewport(myAM.V_WIDTH, myAM.V_HEIGHT);
         camera = new OrthographicCamera(screenWidth, screenHeight);
@@ -273,12 +270,7 @@ public class SingleGameScreen implements Screen{
             allSnakes.add(mySnake);
 
 
-            int speedLimit = 1;
-            if(state == STATE.NORMAL){
-                speedLimit = 1;
-            }else if(state == STATE.SPEEDUP){
-                speedLimit = 2;
-            }
+            int speedLimit = 1+myAM.userdata.get(mySnake.getMyUsername())[1];
 
             mySnake.setSettingDirection(directionDegree);
 //            mySnake.setSettingDirection(getGravityDegree(gravityX,gravityY));
@@ -304,6 +296,7 @@ public class SingleGameScreen implements Screen{
                     mySnake.setHeadPosY(snakeYBeforeUpdate);
                     myfood.placeFood(mySnake.getDeadSnake());
                 } else {
+//                    mySnake.updateBodyPartsPosition(snakeXBeforeUpdate, snakeYBeforeUpdate, myfood);
                     mySnake.updateBodyPartsPosition(snakeXBeforeUpdate, snakeYBeforeUpdate);
                 }
             }
@@ -312,27 +305,30 @@ public class SingleGameScreen implements Screen{
             /*---AI Update---*/
             for (int i = snakeList.size()-1;i>=0;i--){
                 Snake snake = snakeList.get(i);
-                int snkXB4Update = snake.getHeadPosX();
-                int snkYB4Update = snake.getHeadPosY();
-                snake.setSettingDirection(
-                        FindNearestFood(snkXB4Update,snkYB4Update,myfood.getFoodlist())
-                        );
-                snake.moveSnake();
-                if(snake.checkEdge() || bodyCollision(snake,i,allSnakes)){
-                    snake.setHeadPosX(snkXB4Update);
-                    snake.setHeadPosY(snkYB4Update);
-                    myfood.placeFood(snake.getDeadSnake());
-                    snakeList.remove(i);
-                }else{
-                    snake.updateBodyPartsPosition(snkXB4Update,snkYB4Update);
+                speedLimit = myAM.userdata.get(snake.getMyUsername())[1]+1;
+                for(int j=0;j<speedLimit;j++) {
+                    int snkXB4Update = snake.getHeadPosX();
+                    int snkYB4Update = snake.getHeadPosY();
+                    snake.setSettingDirection(
+                            FindNearestFood(snkXB4Update, snkYB4Update, myfood.getFoodlist())
+                    );
+                    snake.moveSnake();
+                    if (snake.checkEdge() || bodyCollision(snake, i, allSnakes)) {
+                        snake.setHeadPosX(snkXB4Update);
+                        snake.setHeadPosY(snkYB4Update);
+                        myfood.placeFood(snake.getDeadSnake());
+                        snakeList.remove(i);
+                    } else {
+                        snake.updateBodyPartsPosition(snkXB4Update, snkYB4Update);
+                    }
+                    checkFoodCollision(snake);
+                    myfood.placeFood();
+                    snake.updateSize();
                 }
-                checkFoodCollision(snake);
-                myfood.placeFood();
-                snake.updateSize();
             }
 
             camera.position.set(mySnake.getHeadPosX(), mySnake.getHeadPosY(), 0);
-            int i = mySnake.getScore()/100;
+            int i = mySnake.getScore()/10;
             camera.viewportWidth = screenWidth * (1+i*roomOutRatio);
             camera.viewportHeight = screenHeight * (1+i*roomOutRatio);
 
@@ -376,8 +372,10 @@ public class SingleGameScreen implements Screen{
         System.out.println("button pressed");
         if(state == STATE.NORMAL){
             state = STATE.SPEEDUP;
+            myAM.userdata.get(mySnake.getMyUsername())[1] = 1;
         }else if(state == STATE.SPEEDUP){
             state = STATE.NORMAL;
+            myAM.userdata.get(mySnake.getMyUsername())[1] = 0;
         }
     }
 
@@ -458,11 +456,8 @@ public class SingleGameScreen implements Screen{
                 }
             }
         }
-
         return false;
     }
-
-
 
 }
 

@@ -56,6 +56,11 @@ public class Food implements Disposable{
         }
     }
 
+    public void placeFoodAt(int x, int y){
+        int[] pos = {x,y};
+        foodlist.add(pos);
+    }
+
 
     public ArrayList<int[]> getFoodlist() {
         return foodlist;
