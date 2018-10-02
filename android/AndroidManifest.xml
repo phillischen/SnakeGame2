@@ -15,7 +15,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/GdxTheme" >
+        android:theme="@style/GdxTheme">
         <activity
             android:name=".Welcome_Activity"
             android:screenOrientation="landscape"
@@ -30,12 +30,15 @@
             android:name=".AndroidLauncher"
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout"
             android:label="@string/app_name"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".Score_Activity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="landscape"></activity>
-
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Setting_Activity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

@@ -16,7 +16,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 public class Welcome_Activity extends AppCompatActivity {
-    private Button startButton, testButton, multiButton,submitButton;
+    private Button startButton, testButton, multiButton,submitButton,settingButton;
     private SocketConnect myConnect;
     private EditText usernameText;
     private String username = "player";
@@ -71,6 +71,7 @@ public class Welcome_Activity extends AppCompatActivity {
                 Intent intent = new Intent(Welcome_Activity.this, Score_Activity.class);
 
                 startActivity(intent);
+                Welcome_Activity.this.finish();
             }
         });
 
@@ -79,11 +80,17 @@ public class Welcome_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new Join().execute();
-
                 //while(true){ alert.setMessage("Connection Failed"); }
+            }
+        });
 
-
-
+        settingButton = findViewById(R.id.setting_button);
+        settingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Welcome_Activity.this, Setting_Activity.class);
+                startActivity(intent);
+                Welcome_Activity.this.finish();
             }
         });
 
