@@ -11,10 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import org.json.JSONObject;
-
-import java.util.HashMap;
-
 public class Welcome_Activity extends AppCompatActivity {
     private Button startButton, testButton, multiButton,submitButton,settingButton;
     private SocketConnect myConnect;
@@ -40,7 +36,7 @@ public class Welcome_Activity extends AppCompatActivity {
     }
 
     private void initiateUI(){
-        usernameText = findViewById(R.id.username_text);
+        usernameText = findViewById(R.id.text_name);
 
         submitButton = findViewById(R.id.submit_button);
         submitButton.setOnClickListener(new View.OnClickListener() {

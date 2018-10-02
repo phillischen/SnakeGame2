@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
-        android:id="@+id/username_text"
+        android:id="@+id/text_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
@@ -28,14 +28,14 @@
         app:layout_constraintTop_toTopOf="@+id/textView_name" />
 
     <Button
-        android:id="@+id/submit_button"
+        android:id="@+id/button_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:text="OK"
-        app:layout_constraintBottom_toBottomOf="@+id/username_text"
-        app:layout_constraintStart_toEndOf="@+id/username_text"
-        app:layout_constraintTop_toTopOf="@+id/username_text" />
+        app:layout_constraintBottom_toBottomOf="@+id/text_name"
+        app:layout_constraintStart_toEndOf="@+id/text_name"
+        app:layout_constraintTop_toTopOf="@+id/text_name" />
 
 
     <RadioGroup
