@@ -16,8 +16,9 @@ public class MyAssetsManager{
     //resource
     public final String SNAKEHEAD1 = "snakehead.png";
     public final String SNAKEBODY1 = "snakebody.png";
-    public final String MAP1 = "border.png";
+    public final String MAP1 = "map5000.png";
     public final String SKIN = "skin/comic-ui.json";
+    public final String SKIN2 = "skin2/flat-earth-ui.json";
     public final String BACKGROUND1 = "bg.png";
     public final String SPEEDUP = "speedup.png";
 
@@ -39,6 +40,7 @@ public class MyAssetsManager{
     public int direction = 0;
     public boolean disconnect = false;
     public String disconnectP = "";
+    public int controlMode = 2; //1 - touch; 2 - joystick; 3 - gravity
 
 
     /////////////////resource loader//////////////////////
@@ -56,6 +58,10 @@ public class MyAssetsManager{
     public void loadSkin(){
         manager.load(SKIN, Skin.class);
         manager.load(BACKGROUND1,Texture.class);
+    }
+
+    public void loadSkin2(){
+        manager.load(SKIN2, Skin.class);
     }
 
     public void loadHubResource(){
@@ -87,5 +93,11 @@ public class MyAssetsManager{
         return userdata.get(name)[3];
     }
 
+    public int getvWidth() {
+        return V_WIDTH;
+    }
 
+    public int getvHeight() {
+        return V_HEIGHT;
+    }
 }

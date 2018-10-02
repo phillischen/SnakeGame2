@@ -1,6 +1,7 @@
 package com.packt.snake.Scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,6 +20,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.packt.snake.MyAssetsManager;
+import com.packt.snake.Screens.MultiGameScreen;
+import com.packt.snake.Screens.SingleGameScreen;
 import com.packt.snake.SnakeGame;
 
 import java.util.ArrayList;
@@ -34,7 +37,7 @@ public class Hud implements Disposable{
     private float timeCount;
     //private int score;
     private OrthographicCamera camera;
-    private Skin myskin;
+    private Skin myskin,myskin2;
     private MyAssetsManager myAm;
     private int roomsize;
     private ArrayList<Label> nameLabelList = new ArrayList<Label>();
@@ -44,17 +47,21 @@ public class Hud implements Disposable{
     private ArrayList<scorerow> rowlist = new ArrayList<scorerow>();
     private Table table;
 
+
     //Label scoreLable;
     //Label snakeLabel;
 
     public Hud(MyAssetsManager manager){
         myAm = manager;
+
         roomsize = myAm.userdata.size();
 
         //myskin = new Skin(Gdx.files.internal("skin/comic-ui.json"));
         myAm.loadSkin();
+        myAm.loadSkin2();
         myAm.manager.finishLoading();
         myskin = myAm.manager.get(myAm.SKIN);
+        myskin2 = myAm.manager.get(myAm.SKIN2);
 
         viewport = new FitViewport(myAm.V_WIDTH,myAm.V_HEIGHT,new OrthographicCamera());
         //camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
@@ -65,8 +72,8 @@ public class Hud implements Disposable{
         setupScoreBand();
        // setupButton();
 
-
     }
+
 
     private void setupScoreBand(){
         table = new Table();//organize things in stage
@@ -89,9 +96,16 @@ public class Hud implements Disposable{
         }
 
         Button button1 = new TextButton("GO",myskin);
-        button1.setSize(50,50);
-        //button1.setPosition(960-50,520-50);
-        button1.setPosition(0,0);
+        button1.setSize(90,90);
+        button1.setPosition(5,5);
+        button1.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                System.out.println("button pressed");
+                myAm.userdata.get(myAm.myUsername)[1] *= -1;
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
 
         myAm.loadHubResource();
         myAm.manager.finishLoading();
@@ -99,8 +113,9 @@ public class Hud implements Disposable{
         Image image1 = new Image(texture);
         image1.setPosition(0,0);
         //table.add(button1).expand().bottom();
-        //stage.addActor(button1);
-        stage.addActor(image1);
+
+        stage.addActor(button1);
+        //stage.addActor(image1);
 
         stage.addActor(table);
     }

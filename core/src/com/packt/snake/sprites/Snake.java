@@ -113,7 +113,7 @@ public class Snake implements Disposable{
     public void updateBodyPoo(int headXBeforeUpdate,int headYBeforeUpdate, Food myFood){
         if(body.size >= 3){
             body.removeIndex(body.size-1);
-            if(myAm.userdata.get(myUsername)[1] == 1 && body.size >= 3){
+            if(myAm.userdata.get(myUsername)[1] < 0 && body.size >= 3){
                 pooCounter--;
                 if(pooCounter == 0) {
                     int foodX = body.get(body.size - 1).getX();

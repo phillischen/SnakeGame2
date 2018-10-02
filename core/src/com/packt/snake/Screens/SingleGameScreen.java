@@ -6,16 +6,19 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -55,11 +58,10 @@ public class SingleGameScreen implements Screen{
     private int directionDegree = 0;
 
     private float stateTimer;//count how many seconds the current state last
-    private BitmapFont bitmapFont;
     private GlyphLayout layout = new GlyphLayout();
     FlingDirection myFlingDirection;
     private Stage myStage;
-    private Skin mySkin;
+    private Skin mySkin, mySkin2;
 
     private float gravityX;
     private float gravityY;
@@ -75,7 +77,7 @@ public class SingleGameScreen implements Screen{
 //        snakeList.add(new Snake(this.game,500,700,"AI3"));
 //        snakeList.add(new Snake(this.game,800,900,"AI4"));
 
-        viewport = new FitViewport(myAM.V_WIDTH, myAM.V_HEIGHT);
+        viewport = new FitViewport(myAM.getvWidth(), myAM.getvHeight());
         camera = new OrthographicCamera(screenWidth, screenHeight);
 
         camera.position.set(mySnake.getHeadPosX(), mySnake.getHeadPosY(), 0);
@@ -83,46 +85,87 @@ public class SingleGameScreen implements Screen{
         screenHeight = myAM.V_HEIGHT*2;
         camera.viewportWidth = screenWidth;
         camera.viewportHeight = screenHeight;
-
-
-        //addButton();
-        hud = new Hud(myAM);
-
     }
 
     @Override
     public void show() {
         camera.update();
-        myAM.loadMap();
-        myAM.manager.finishLoading();
-        background = myAM.manager.get(myAM.MAP1);
-        //background = new Texture("map10000.png");
-        myAM.mapsize = background.getWidth();
-        bitmapFont = new BitmapFont();
-        myFlingDirection = new FlingDirection();
-        Gdx.input.setInputProcessor(new GestureDetector(myFlingDirection));
+        addUI();
+        setControl();
 
 
     }
 
-    private void addButton(){
-        myStage = new Stage(viewport, myAM.batch);
-        myAM.loadSkin();
+
+    private void addUI(){
+        hud = new Hud(myAM);
+        myAM.loadMap();
         myAM.manager.finishLoading();
-        mySkin = myAM.manager.get(myAM.SKIN);
+        background = myAM.manager.get(myAM.MAP1);
+        myAM.mapsize = background.getWidth();
 
-        Button button1 = new TextButton("GO",mySkin);
-        button1.setSize(200,200);
-        button1.setPosition(Gdx.graphics.getWidth()-50,Gdx.graphics.getHeight()-50);
+        myStage = new Stage(viewport, myAM.batch);
 
-        button1.addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                System.out.println("button pressed");
-                return super.touchDown(event, x, y, pointer, button);
-            }
-        });
-        myStage.addActor(button1);
+        myAM.loadHubResource();
+        myAM.manager.finishLoading();
+        Texture texture = myAM.manager.get(myAM.SPEEDUP);
+        Image image1 = new Image(texture);
+        image1.setPosition(0,0);
+        myStage.addActor(image1);
+
+    }
+
+    private void setControl(){
+        if (myAM.controlMode == 1){ //fling control
+            myFlingDirection = new FlingDirection();
+            Gdx.input.setInputProcessor(new GestureDetector(myFlingDirection));
+
+
+        } else if (myAM.controlMode == 2){ //joystick
+            Gdx.input.setInputProcessor(myStage);
+            myAM.loadSkin();
+            myAM.loadSkin2();
+            myAM.manager.finishLoading();
+            mySkin = myAM.manager.get(myAM.SKIN);
+            mySkin2 = myAM.manager.get(myAM.SKIN2);
+
+            Button button1 = new TextButton("GO",mySkin);
+            button1.setSize(90,90);
+            button1.setPosition(5,5);
+
+            button1.addListener(new InputListener(){
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    System.out.println("button pressed");
+                    myAM.userdata.get(myAM.myUsername)[1] *= -1;
+                    return super.touchDown(event, x, y, pointer, button);
+                }
+            });
+            myStage.addActor(button1);
+
+            /*
+            Touchpad touchpad = new Touchpad(150, mySkin2);
+            touchpad.setPosition(myAM.getvWidth()-100,5);
+            touchpad.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    // This is run when anything is changed on this actor.
+                    float deltaX = ((Touchpad) actor).getKnobPercentX();
+                    float deltaY = ((Touchpad) actor).getKnobPercentY();
+                    System.out.println("===============x = "+ deltaX+"; y = "+deltaY);
+
+                }
+            });
+            */
+            //myStage.addActor(touchpad);
+
+        } else { //gravity
+            Gdx.input.setInputProcessor(hud.stage);
+            //myStage.addActor(button1);
+
+        }
+
+
     }
 
     @Override
@@ -207,9 +250,11 @@ public class SingleGameScreen implements Screen{
         }
         myAM.batch.end();
 
+        //myStage.draw();
         //draw the score hub
         myAM.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
+        myStage.draw();
 
     }
 
@@ -270,14 +315,19 @@ public class SingleGameScreen implements Screen{
             allSnakes.add(mySnake);
 
             int speedLimit = 1;
-            if(myAM.userdata.get(mySnake.getMyUsername())[1] == 1){
+            if(myAM.userdata.get(mySnake.getMyUsername())[1] < 0){
                 if(mySnake.getBody().size > 3){
-                    speedLimit = 1+myAM.userdata.get(mySnake.getMyUsername())[1];
+                    //speedLimit = 1+myAM.userdata.get(mySnake.getMyUsername())[1];
+                    speedLimit = 2;
+                    System.out.println("Speed limit = "+speedLimit);
                 }
             }
 
-            mySnake.setSettingDirection(directionDegree);
-//            mySnake.setSettingDirection(getGravityDegree(gravityX,gravityY));
+            if (myAM.controlMode == 3)
+                mySnake.setSettingDirection(getGravityDegree(gravityX,gravityY));
+            else
+                mySnake.setSettingDirection(directionDegree);
+
 
             for(int i=0;i<speedLimit;i++) {
                 int snakeXBeforeUpdate = mySnake.getHeadPosX();
@@ -293,12 +343,15 @@ public class SingleGameScreen implements Screen{
 
                 /*---Player Snake-Other Snakes Collision Check---*/
                 boolean isBodyCollision = bodyCollision(mySnake, allSnakes.size() - 1, allSnakes);
-                if (isBodyCollision) state = STATE.GAME_OVER;
+                if (isBodyCollision) {
+                    state = STATE.GAME_OVER;
+                }
 
                 if (state == STATE.GAME_OVER) {
                     mySnake.setHeadPosX(snakeXBeforeUpdate);
                     mySnake.setHeadPosY(snakeYBeforeUpdate);
                     myfood.placeFood(mySnake.getDeadSnake());
+                    break;
                 } else {
                     mySnake.updateBodyPoo(snakeXBeforeUpdate, snakeYBeforeUpdate, myfood);
 //                    mySnake.updateBodyPartsPosition(snakeXBeforeUpdate, snakeYBeforeUpdate);
@@ -330,6 +383,7 @@ public class SingleGameScreen implements Screen{
                         myfood.placeFood(snake.getDeadSnake());
                         hud.updateDead(snake.getMyUsername());
                         snakeList.remove(i);
+                        break;
                     } else {
 //                        snake.updateBodyPartsPosition(snkXB4Update, snkYB4Update);
                         snake.updateBodyPoo(snkXB4Update,snkYB4Update,myfood);
@@ -383,7 +437,9 @@ public class SingleGameScreen implements Screen{
     }
 
     private void speedUp(){
-        System.out.println("button pressed");
+        //System.out.println("button pressed");
+        myAM.userdata.get(mySnake.getMyUsername())[1] *= -1;
+        /*
         if(state == STATE.NORMAL){
             state = STATE.SPEEDUP;
             myAM.userdata.get(mySnake.getMyUsername())[1] = 1;
@@ -391,6 +447,7 @@ public class SingleGameScreen implements Screen{
             state = STATE.NORMAL;
             myAM.userdata.get(mySnake.getMyUsername())[1] = 0;
         }
+        */
     }
 
     public class FlingDirection implements GestureDetector.GestureListener {
@@ -446,7 +503,7 @@ public class SingleGameScreen implements Screen{
                 return false;
             directionDegree = computeDirectionDegree(velocityX,velocityY);
             //mySnake.setSettingDirection(directionDegree);
-            System.out.println("fling called! "+directionDegree);
+            //System.out.println("fling called! "+directionDegree);
             return false;
         }
     }
