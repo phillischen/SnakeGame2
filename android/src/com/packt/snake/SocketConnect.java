@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -111,7 +112,8 @@ public class SocketConnect extends Thread {
     public void run(){
         try {
             while (!mSocket.isClosed()) {
-                if (input.available() > 0){
+                //if (input.available() > 0){
+                if(true){
                     String message = input.readUTF();
                     System.out.println("thread receive msg: "+message);
                     JSONObject respond = new JSONObject(message);
@@ -140,7 +142,8 @@ public class SocketConnect extends Thread {
                             System.out.println("someone quit "+ userlist);
                             break;
                     }
-                } if (quit){
+                }
+                if (quit){
                     //sendQuitRequest();
                     JSONObject m = new JSONObject();
                     m.put("type", "quit");
@@ -172,9 +175,12 @@ public class SocketConnect extends Thread {
             input.close();
             output.close();
             mSocket.close();
+            } catch (EOFException eof){
+                myAm.serverError = true;
             } catch (Exception e) {
                 //e.printStackTrace();
                 Log.e("MYTAG","socket thread ERROR",e);
+                myAm.serverError = true;
             }
 
 

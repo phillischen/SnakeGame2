@@ -66,8 +66,8 @@ public class Snake implements Disposable{
         //load skin based on name!!!
         myAm.loadSnake(1);
         myAm.manager.finishLoading();
-        headTexture = myAm.manager.get(myAm.SNAKEHEAD1);
-        bodyTexture = myAm.manager.get(myAm.SNAKEBODY1);
+        headTexture = myAm.manager.get(myAm.myheadskin);
+        bodyTexture = myAm.manager.get(myAm.mybodyskin);
 
         resizeBody(initSize);
         for(int i=1;i<=3;i++){

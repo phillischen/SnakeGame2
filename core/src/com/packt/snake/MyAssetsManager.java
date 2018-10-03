@@ -15,7 +15,18 @@ public class MyAssetsManager{
 
     //resource
     public final String SNAKEHEAD1 = "snakehead.png";
-    public final String SNAKEBODY1 = "snakebody.png";
+    public final String SNAKEBODY1 = "skin1.png";
+    public final String SNAKEHEAD2 = "snakehead.png";
+    public final String SNAKEBODY2 = "skin2.png";
+    public final String SNAKEHEAD3 = "snakehead.png";
+    public final String SNAKEBODY3 = "skin3.png";
+    public final String SNAKEHEAD4 = "snakehead.png";
+    public final String SNAKEBODY4 = "skin4.png";
+    public final String SNAKEHEAD5 = "snakehead.png";
+    public final String SNAKEBODY5 = "skin5.png";
+    public final String SNAKEHEAD6 = "snakehead.png";
+    public final String SNAKEBODY6 = "skin6.png";
+
     public final String MAP1 = "map5001.png";
     public final String SKIN = "skin/comic-ui.json";
     public final String SKIN2 = "skin2/flat-earth-ui.json";
@@ -24,7 +35,7 @@ public class MyAssetsManager{
 
     //parameters
     public static final int V_WIDTH = 960;
-    public static final int V_HEIGHT = 520;
+    public static final int V_HEIGHT = 560;
     private static final int POINTS_PER_FOOD = 10;
     public SpriteBatch batch;//only need one, allow all screen to acces
     //public int score = 0;
@@ -41,6 +52,8 @@ public class MyAssetsManager{
     public boolean disconnect = false;
     public String disconnectP = "";
     public int controlMode = 2; //1 - touch; 2 - joystick; 3 - gravity
+    public String myheadskin = SNAKEHEAD1, mybodyskin = SNAKEBODY1;
+    public boolean serverError = false;
 
 
     /////////////////resource loader//////////////////////
@@ -51,13 +64,50 @@ public class MyAssetsManager{
     }
 
     public void loadSnake(int skincode){//load based on skincode
-        manager.load(SNAKEHEAD1, Texture.class);
-        manager.load(SNAKEBODY1,Texture.class);
+        switch (skincode){
+            case 1:
+                manager.load(SNAKEHEAD1, Texture.class);
+                manager.load(SNAKEBODY1,Texture.class);
+                myheadskin = SNAKEHEAD1;
+                mybodyskin = SNAKEBODY1;
+                break;
+            case 2:
+                manager.load(SNAKEHEAD2, Texture.class);
+                manager.load(SNAKEBODY2,Texture.class);
+                myheadskin = SNAKEHEAD2;
+                mybodyskin = SNAKEBODY2;
+                break;
+            case 3:
+                manager.load(SNAKEHEAD3, Texture.class);
+                manager.load(SNAKEBODY3,Texture.class);
+                myheadskin = SNAKEHEAD3;
+                mybodyskin = SNAKEBODY3;
+                break;
+            case 4:
+                manager.load(SNAKEHEAD4, Texture.class);
+                manager.load(SNAKEBODY4,Texture.class);
+                myheadskin = SNAKEHEAD4;
+                mybodyskin = SNAKEBODY4;
+                break;
+            case 5:
+                manager.load(SNAKEHEAD5, Texture.class);
+                manager.load(SNAKEBODY5,Texture.class);
+                myheadskin = SNAKEHEAD5;
+                mybodyskin = SNAKEBODY5;
+                break;
+            case 6:
+                manager.load(SNAKEHEAD6, Texture.class);
+                manager.load(SNAKEBODY6,Texture.class);
+                myheadskin = SNAKEHEAD6;
+                mybodyskin = SNAKEBODY6;
+                break;
+        }
+
     }
 
     public void loadSkin(){
         manager.load(SKIN, Skin.class);
-        manager.load(BACKGROUND1,Texture.class);
+        //manager.load(BACKGROUND1,Texture.class);
     }
 
     public void loadSkin2(){

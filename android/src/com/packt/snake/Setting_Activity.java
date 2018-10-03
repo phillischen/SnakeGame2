@@ -29,7 +29,7 @@ public class Setting_Activity extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
-        adsswitch = (Switch) findViewById(R.id.switch_noads);
+        adsswitch = findViewById(R.id.switch_noads);
         adsswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,
@@ -49,14 +49,6 @@ public class Setting_Activity extends AppCompatActivity {
         });
 
         usernameText = findViewById(R.id.text_name);
-
-        submitButton = findViewById(R.id.submit_button);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                username = usernameText.getText().toString();
-            }
-        });
 
 
         skins = findViewById(R.id.skingroup);

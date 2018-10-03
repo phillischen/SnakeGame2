@@ -107,17 +107,23 @@ public class Hud implements Disposable{
             }
         });
 
+
+        //table.add(button1).expand().bottom();
+
+        stage.addActor(button1);
+
+
+        stage.addActor(table);
+    }
+
+    public void addImage(){
         myAm.loadHubResource();
         myAm.manager.finishLoading();
         Texture texture = myAm.manager.get(myAm.SPEEDUP);
         Image image1 = new Image(texture);
         image1.setPosition(0,0);
-        //table.add(button1).expand().bottom();
+        stage.addActor(image1);
 
-        stage.addActor(button1);
-        //stage.addActor(image1);
-
-        stage.addActor(table);
     }
 
     public void updateScore(){

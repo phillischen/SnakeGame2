@@ -10,9 +10,9 @@
         android:id="@+id/back_botton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="40dp"
         android:layout_marginBottom="20dp"
-        android:text="Back"
+        android:layout_marginEnd="40dp"
+        android:text="save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -27,16 +27,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView_name" />
 
-    <Button
-        android:id="@+id/button_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:text="OK"
-        app:layout_constraintBottom_toBottomOf="@+id/text_name"
-        app:layout_constraintStart_toEndOf="@+id/text_name"
-        app:layout_constraintTop_toTopOf="@+id/text_name" />
-
 
     <RadioGroup
         android:id="@+id/skingroup"
@@ -50,17 +40,21 @@
 
         <RadioButton
             android:id="@+id/radio_Skin1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/shin1"
             android:baselineAligned="false" />
 
         <RadioButton
             android:id="@+id/radio_Skin2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:background="@drawable/shin2" />
 
         <RadioButton
             android:id="@+id/radio_Skin3"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/shin3" />
 

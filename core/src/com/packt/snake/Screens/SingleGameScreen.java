@@ -166,6 +166,7 @@ public class SingleGameScreen implements Screen{
             });
 
             myStage.addActor(touchpad);
+            hud.addImage();
 
         } else { //gravity
             Gdx.input.setInputProcessor(hud.stage);
@@ -261,8 +262,9 @@ public class SingleGameScreen implements Screen{
         //myStage.draw();
         //draw the score hub
         myAM.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-        hud.stage.draw();
+
         myStage.draw();
+        hud.stage.draw();
 
     }
 

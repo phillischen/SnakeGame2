@@ -38,14 +38,6 @@ public class Welcome_Activity extends AppCompatActivity {
     private void initiateUI(){
         usernameText = findViewById(R.id.text_name);
 
-        submitButton = findViewById(R.id.submit_button);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                username = usernameText.getText().toString();
-                myConnect.setUsername(username);
-            }
-        });
         startButton = findViewById(R.id.start_button);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
