@@ -73,6 +73,7 @@ public class Snake implements Disposable{
         for(int i=1;i<=3;i++){
             body.add(new SnakeBody(this.headPosX -i*step, this.headPosY -i*step));
         }
+        myAm.userdata.get(myUsername)[1] = 1;
     }
 
     public class SnakeBody {
@@ -278,7 +279,7 @@ public class Snake implements Disposable{
     }
 
     public int getScore() {
-        return score;
+        return body.size-3;
     }
 
     public void setScore(int score) {
