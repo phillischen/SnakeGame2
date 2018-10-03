@@ -108,21 +108,21 @@
         app:layout_constraintTop_toBottomOf="@+id/skingroup">
 
         <RadioButton
-            android:id="@+id/radioButton13"
+            android:id="@+id/radio_gravity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/settinggravity" />
 
         <RadioButton
-            android:id="@+id/radioButton14"
+            android:id="@+id/radio_handle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/settinghandle" />
 
         <RadioButton
-            android:id="@+id/radioButton15"
+            android:id="@+id/radio_touch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -147,6 +147,16 @@
         android:layout_marginTop="30dp"
         android:text="Name:"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/switch_noads"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="No Ads"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
