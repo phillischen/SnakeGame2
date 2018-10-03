@@ -15,7 +15,7 @@ public class Food implements Disposable{
     private Texture food,background;
     private ArrayList<int[]> foodlist = new ArrayList<int[]>();
     private static final int padding = 300;
-    private java.util.Random randomX = new java.util.Random(1);
+    private java.util.Random randomX = new java.util.Random(10);
     private java.util.Random randomY = new java.util.Random(1);
     private int maxWidth;
     private int maxHeigh;
@@ -35,7 +35,7 @@ public class Food implements Disposable{
     }
 
     public void placeFood(){ //randomly put food on screen
-        if (foodlist.size()<20){ //no food no screen
+        if (foodlist.size()<50){ //no food no screen
             do{
                 //need to change to unified canvas size
                 int foodX = padding+randomX.nextInt(maxWidth);

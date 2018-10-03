@@ -375,10 +375,10 @@ public class SingleGameScreen implements Screen{
             for (int i = snakeList.size()-1;i>=0;i--){
                 Snake snake = snakeList.get(i);
 
-                speedLimit = myAM.userdata.get(snake.getMyUsername())[1]+1;
+                speedLimit = 1;
                 if(myAM.userdata.get(snake.getMyUsername())[1] < 0){
                     if(snake.getBody().size > 3){
-                        speedLimit = 1+myAM.userdata.get(snake.getMyUsername())[1];
+                        speedLimit = 2;
                     }
                 }
 
@@ -408,7 +408,7 @@ public class SingleGameScreen implements Screen{
             }
 
             camera.position.set(mySnake.getHeadPosX(), mySnake.getHeadPosY(), 0);
-            int i = mySnake.getScore()/10;
+            float i = mySnake.getScore()/10;
             camera.viewportWidth = screenWidth * (1+i*roomOutRatio);
             camera.viewportHeight = screenHeight * (1+i*roomOutRatio);
 
