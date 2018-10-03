@@ -18,16 +18,19 @@ public class Setting_Activity extends AppCompatActivity {
     private RadioGroup skins;
     private RadioGroup controls;
     private Switch adsswitch;
-    private int skinno;
-    private int controlno;
+    private int skinno = 1;
+    private int controlno = 1;
     private boolean adsOff = false;
+    private SocketConnect myConnect;
+    private MyAssetsManager myAm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_);
-
         getSupportActionBar().hide();
+        myConnect = SocketConnect.get();
+        myAm = myConnect.getMyAm();
 
         adsswitch = findViewById(R.id.switch_noads);
         adsswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -43,12 +46,16 @@ public class Setting_Activity extends AppCompatActivity {
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                myAm.updateSetting(skinno,controlno,adsOff);
+                myAm.myUsername = usernameText.getText().toString();
                 Intent intent = new Intent(Setting_Activity.this,Welcome_Activity.class);
                 startActivity(intent);
+                Setting_Activity.this.finish();
             }
         });
 
         usernameText = findViewById(R.id.text_name);
+        usernameText.setText(myAm.myUsername);
 
 
         skins = findViewById(R.id.skingroup);

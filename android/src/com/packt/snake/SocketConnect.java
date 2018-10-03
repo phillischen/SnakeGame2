@@ -21,21 +21,16 @@ public class SocketConnect extends Thread {
     private int port = 8080;
     private DataInputStream input;
     private DataOutputStream output;
-    private String username = "player";
     public boolean quit = false;
 
     private Socket mSocket;
-    //private SnakeGame game;
     private MyAssetsManager myAm = new MyAssetsManager();
-    //private Context mycontext;
     private String userlist = "", skinlist = "";
     private ArrayList<String> userarray = new ArrayList<String>();
     private ArrayList<Integer> skinarray;
     private boolean waiting = false;
-   // public Intent startGameIntent;
 
     private SocketConnect(){
-        //mycontext = context;
     }
 
     public static SocketConnect get(){
@@ -50,9 +45,6 @@ public class SocketConnect extends Thread {
         myConnect = new SocketConnect();
     }
 
-    public void setAssetManager(MyAssetsManager manager){
-        myAm = manager;
-    }
 
     public void setIpAdress(String ip, int port){
         ipAdress = ip;
@@ -73,7 +65,7 @@ public class SocketConnect extends Thread {
             System.out.println("use Current socket");
             JSONObject join = new JSONObject();
             join.put("type", "askjoin");
-            join.put("username", username);
+            join.put("username", myAm.myUsername);
             join.put("skin",1);
             output.writeUTF(join.toString());
             String message = input.readUTF();
@@ -194,16 +186,9 @@ public class SocketConnect extends Thread {
         return skinlist;
     }
 
-    public boolean isWaiting() {
-        return waiting;
-    }
 
     public void setWaiting(boolean waiting) {
         this.waiting = waiting;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public void setQuit(boolean quit) {
@@ -215,18 +200,21 @@ public class SocketConnect extends Thread {
     }
 
     public void dumpSingleData(){
-        myAm.myUsername = username;
-        int[] param = new int[]{0,1,0,0,0};
-        int[] param2 = new int[]{0,1,0,0,0};
-        myAm.userdata.put(username,param);
+        int[] param = new int[]{1,1,0,0,0};
+        param[0] = myAm.myColor;
+
+        int[] param2 = new int[]{1,1,0,0,0};
+        if (myAm.myColor + 1 > 6)
+            param2[0] = myAm.myColor - 1;
+        else param2[0] = myAm.myColor + 1;
+        myAm.userdata.put(myAm.myUsername,param);
         myAm.userdata.put("AI",param2);
     }
 
     public void dumpMultiData(){  //put final data to star the game to asset manager
-        myAm.myUsername = username;
         myAm.userlist = userlist.split("\n");
         for (String x : userarray){
-            int[] param = new int[]{0,0,0,0,0};//[skin,speed,score,length,ready]
+            int[] param = new int[]{1,1,0,0,0};//[skin,speed,score,length,ready]
             //System.out.println("====================user" + x+" is dumped");
             myAm.userdata.put(x,param);
         }
@@ -235,4 +223,5 @@ public class SocketConnect extends Thread {
     public ArrayList<String> getUserarray() {
         return userarray;
     }
+
 }

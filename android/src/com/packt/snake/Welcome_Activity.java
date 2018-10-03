@@ -14,8 +14,6 @@ import android.widget.EditText;
 public class Welcome_Activity extends AppCompatActivity {
     private Button startButton, testButton, multiButton,submitButton,settingButton;
     private SocketConnect myConnect;
-    private EditText usernameText;
-    private String username = "player";
     //AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
     //AlertDialog alert;
 
@@ -36,7 +34,6 @@ public class Welcome_Activity extends AppCompatActivity {
     }
 
     private void initiateUI(){
-        usernameText = findViewById(R.id.text_name);
 
         startButton = findViewById(R.id.start_button);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -147,8 +144,7 @@ public class Welcome_Activity extends AppCompatActivity {
                             System.out.println("===========cancel is triggerd");
                             dialog.dismiss();
                             myConnect.renewSocket();
-                            myConnect = SocketConnect.get();
-                            myConnect.setUsername(username);
+                            //myConnect = SocketConnect.get();
 
                         }
                     }).setCancelable(false);

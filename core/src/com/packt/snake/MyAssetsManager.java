@@ -30,7 +30,6 @@ public class MyAssetsManager{
     public final String MAP1 = "map5001.png";
     public final String SKIN = "skin/comic-ui.json";
     public final String SKIN2 = "skin2/flat-earth-ui.json";
-    public final String BACKGROUND1 = "bg.png";
     public final String SPEEDUP = "speedup.png";
 
     //parameters
@@ -51,9 +50,11 @@ public class MyAssetsManager{
     public int direction = 0;
     public boolean disconnect = false;
     public String disconnectP = "";
-    public int controlMode = 2; //1 - touch; 2 - joystick; 3 - gravity
+    public int controlMode = 1; //1 - touch; 2 - joystick; 3 - gravity
     public String myheadskin = SNAKEHEAD1, mybodyskin = SNAKEBODY1;
     public boolean serverError = false;
+    public boolean adsOff = false;
+    public int myColor = 1;
 
 
     /////////////////resource loader//////////////////////
@@ -92,6 +93,7 @@ public class MyAssetsManager{
             case 5:
                 manager.load(SNAKEHEAD5, Texture.class);
                 manager.load(SNAKEBODY5,Texture.class);
+                //System.out.println("==============skin 5 is selected");
                 myheadskin = SNAKEHEAD5;
                 mybodyskin = SNAKEBODY5;
                 break;
@@ -149,5 +151,55 @@ public class MyAssetsManager{
 
     public int getvHeight() {
         return V_HEIGHT;
+    }
+
+    public String getHeadAdress(String name){
+        String addr = "";
+        int skincode = userdata.get(name)[0];
+        switch (skincode){
+            case 1:
+                addr = SNAKEHEAD1;break;
+            case 2:
+                addr = SNAKEHEAD2;break;
+            case 3:
+                addr = SNAKEHEAD3;break;
+            case 4:
+                addr = SNAKEHEAD4;break;
+            case 5:
+                addr = SNAKEHEAD5;break;
+            case 6:
+                addr = SNAKEHEAD6;break;
+            default:
+                addr = SNAKEHEAD1;
+        }
+        return addr;
+    }
+
+    public String getBodyAdress(String name){
+        String addr = "";
+        int skincode = userdata.get(name)[0];
+        switch (skincode){
+            case 1:
+                addr = SNAKEBODY1;break;
+            case 2:
+                addr = SNAKEBODY2;break;
+            case 3:
+                addr = SNAKEBODY3;break;
+            case 4:
+                addr = SNAKEBODY4;break;
+            case 5:
+                addr = SNAKEBODY5;break;
+            case 6:
+                addr = SNAKEBODY6;break;
+            default:
+                addr = SNAKEBODY1;
+        }
+        return addr;
+    }
+
+    public void updateSetting(int color, int control, boolean ad){
+        myColor = color;
+        controlMode = control;
+        adsOff = ad;
     }
 }

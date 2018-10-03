@@ -119,9 +119,10 @@ public class SingleGameScreen implements Screen{
     }
 
     private void setControl(){
-        if (myAM.controlMode == 1){ //fling control
+        if (myAM.controlMode == 1 || myAM.controlMode == 3){ //fling control
             myFlingDirection = new FlingDirection();
             Gdx.input.setInputProcessor(new GestureDetector(myFlingDirection));
+            hud.addImage();
 
 
         } else if (myAM.controlMode == 2){ //joystick
@@ -170,7 +171,12 @@ public class SingleGameScreen implements Screen{
 
         } else { //gravity
             Gdx.input.setInputProcessor(hud.stage);
-            //myStage.addActor(button1);
+            myAM.loadHubResource();
+            myAM.manager.finishLoading();
+            Texture texture = myAM.manager.get(myAM.SPEEDUP);
+            Image image1 = new Image(texture);
+            image1.setPosition(0,0);
+            myStage.addActor(image1);
 
         }
 
@@ -259,11 +265,11 @@ public class SingleGameScreen implements Screen{
         }
         myAM.batch.end();
 
-        //myStage.draw();
+        myStage.draw();
         //draw the score hub
         myAM.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
-        myStage.draw();
+        //myStage.draw();
         hud.stage.draw();
 
     }
@@ -522,6 +528,8 @@ public class SingleGameScreen implements Screen{
         @Override
         public boolean fling(float velocityX, float velocityY, int button) {
             //System.out.println("fling called!");
+            if (myAM.controlMode == 3)
+                return false;
             if (stateTimer < 0.5)
                 return false;
             directionDegree = computeDirectionDegree(velocityX,velocityY);

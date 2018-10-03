@@ -37,7 +37,7 @@ public class Snake implements Disposable{
     private SnakeGame game;
     private String myUsername;
     private int pooCounter = pooInterval;
-
+    private Pixmap pixmapOrigin, newPixmap;
 
     private MyAssetsManager myAm;
 
@@ -47,8 +47,8 @@ public class Snake implements Disposable{
         myUsername = myAm.myUsername;
         myAm.loadSnake(1);
         myAm.manager.finishLoading();
-        headTexture = myAm.manager.get(myAm.SNAKEHEAD1);
-        bodyTexture = myAm.manager.get(myAm.SNAKEBODY1);
+        headTexture = myAm.manager.get(myAm.myheadskin);
+        bodyTexture = myAm.manager.get(myAm.mybodyskin);
 
         resizeBody(initSize);
         for(int i=1;i<=3;i++){
@@ -64,7 +64,7 @@ public class Snake implements Disposable{
         this.headPosY = headPosY;
 
         //load skin based on name!!!
-        myAm.loadSnake(1);
+        myAm.loadSnake(5);
         myAm.manager.finishLoading();
         headTexture = myAm.manager.get(myAm.myheadskin);
         bodyTexture = myAm.manager.get(myAm.mybodyskin);
@@ -73,7 +73,7 @@ public class Snake implements Disposable{
         for(int i=1;i<=3;i++){
             body.add(new SnakeBody(this.headPosX -i*step, this.headPosY -i*step));
         }
-        myAm.userdata.get(myUsername)[1] = 1;
+        //myAm.userdata.get(myUsername)[1] = 1;
     }
 
     public class SnakeBody {
@@ -221,24 +221,24 @@ public class Snake implements Disposable{
     }
 
     private void resizeBody(int size){
-        Pixmap pixmapOrigin = new Pixmap(Gdx.files.internal("snakehead.png"));
 
-        Pixmap newPixmap = new Pixmap(size, size, pixmapOrigin.getFormat());
+        pixmapOrigin = new Pixmap(Gdx.files.internal(myAm.getHeadAdress(myUsername)));
+
+        newPixmap = new Pixmap(size, size, pixmapOrigin.getFormat());
         newPixmap.drawPixmap(pixmapOrigin,
                 0, 0, pixmapOrigin.getWidth(), pixmapOrigin.getHeight(),
                 0, 0, newPixmap.getWidth(), newPixmap.getHeight()
         );
         headTexture = new Texture(newPixmap);
 
-        pixmapOrigin = new Pixmap(Gdx.files.internal("snakebody.png"));
+        pixmapOrigin = new Pixmap(Gdx.files.internal(myAm.getBodyAdress(myUsername)));
         newPixmap = new Pixmap(size, size, pixmapOrigin.getFormat());
         newPixmap.drawPixmap(pixmapOrigin,
                 0, 0, pixmapOrigin.getWidth(), pixmapOrigin.getHeight(),
                 0, 0, newPixmap.getWidth(), newPixmap.getHeight()
         );
         bodyTexture = new Texture(newPixmap);
-        pixmapOrigin.dispose();
-        newPixmap.dispose();
+
     }
 
     public ArrayList<Array<Integer>> getDeadSnake(){
@@ -259,7 +259,9 @@ public class Snake implements Disposable{
 
     @Override
     public void dispose() {
-        headTexture.dispose();
+        //headTexture.dispose();
+        pixmapOrigin.dispose();
+        newPixmap.dispose();
 //        bodyTexture.dispose();
     }
 
