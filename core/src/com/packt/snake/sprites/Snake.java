@@ -193,7 +193,7 @@ public class Snake implements Disposable{
             //headPosX = Gdx.graphics.getWidth() - SNAKE_MOVEMENT;
             return true;
         }
-        if (headPosY +50 >= myAm.mapsize){
+        if (headPosY +100 >= myAm.mapsize){
             //headPosY = 0;
             return true;
         }

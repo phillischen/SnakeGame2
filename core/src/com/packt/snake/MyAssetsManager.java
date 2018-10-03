@@ -16,7 +16,7 @@ public class MyAssetsManager{
     //resource
     public final String SNAKEHEAD1 = "snakehead.png";
     public final String SNAKEBODY1 = "snakebody.png";
-    public final String MAP1 = "map5000.png";
+    public final String MAP1 = "map5001.png";
     public final String SKIN = "skin/comic-ui.json";
     public final String SKIN2 = "skin2/flat-earth-ui.json";
     public final String BACKGROUND1 = "bg.png";

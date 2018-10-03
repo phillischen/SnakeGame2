@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -62,6 +64,7 @@ public class SingleGameScreen implements Screen{
     FlingDirection myFlingDirection;
     private Stage myStage;
     private Skin mySkin, mySkin2;
+    private Touchpad touchpad;
 
     private float gravityX;
     private float gravityY;
@@ -143,21 +146,26 @@ public class SingleGameScreen implements Screen{
             });
             myStage.addActor(button1);
 
-            /*
-            Touchpad touchpad = new Touchpad(150, mySkin2);
-            touchpad.setPosition(myAM.getvWidth()-100,5);
-            touchpad.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    // This is run when anything is changed on this actor.
-                    float deltaX = ((Touchpad) actor).getKnobPercentX();
-                    float deltaY = ((Touchpad) actor).getKnobPercentY();
-                    System.out.println("===============x = "+ deltaX+"; y = "+deltaY);
+            Texture touchpadbase = new Texture("handlebase.png");
+            Texture knob = new Texture("handle.png");
+            TextureRegionDrawable baseRegion = new TextureRegionDrawable(new TextureRegion(touchpadbase,0,0,200,200));
+            TextureRegionDrawable knobRegion = new TextureRegionDrawable(new TextureRegion(knob,0,0,50,50));
+            Touchpad.TouchpadStyle style= new Touchpad.TouchpadStyle(baseRegion,knobRegion);
+            touchpad = new Touchpad(30,style);
+            touchpad.setBounds(myAM.getvWidth()-155,5,150,150);
 
+            touchpad.addListener(new InputListener(){
+
+                @Override
+                public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                    super.touchDragged(event, x, y, pointer);
+                    float deltaX = touchpad.getKnobPercentX();
+                    float deltaY = touchpad.getKnobPercentY();
+                    System.out.println("===============x = "+ deltaX+"; y = "+deltaY);
                 }
             });
-            */
-            //myStage.addActor(touchpad);
+
+            myStage.addActor(touchpad);
 
         } else { //gravity
             Gdx.input.setInputProcessor(hud.stage);
@@ -325,8 +333,12 @@ public class SingleGameScreen implements Screen{
 
             if (myAM.controlMode == 3)
                 mySnake.setSettingDirection(getGravityDegree(gravityX,gravityY));
-            else
+            else if (myAM.controlMode == 1)
                 mySnake.setSettingDirection(directionDegree);
+            else {
+                getTouchpadDegree();
+                mySnake.setSettingDirection(directionDegree);
+            }
 
 
             for(int i=0;i<speedLimit;i++) {
@@ -364,7 +376,7 @@ public class SingleGameScreen implements Screen{
                 Snake snake = snakeList.get(i);
 
                 speedLimit = myAM.userdata.get(snake.getMyUsername())[1]+1;
-                if(myAM.userdata.get(snake.getMyUsername())[1] == 1){
+                if(myAM.userdata.get(snake.getMyUsername())[1] < 0){
                     if(snake.getBody().size > 3){
                         speedLimit = 1+myAM.userdata.get(snake.getMyUsername())[1];
                     }
@@ -426,7 +438,16 @@ public class SingleGameScreen implements Screen{
         return degree;
     }
 
+    private void getTouchpadDegree(){
+        if (touchpad.isTouched()){
+            float deltaX = touchpad.getKnobPercentX();
+            float deltaY = touchpad.getKnobPercentY();
+            int degree = computeDirectionDegree(deltaX,-deltaY);
+            directionDegree = degree;
+            System.out.println("x = "+ deltaX+"; y = "+deltaY+"; degree = "+degree);
 
+        }
+    }
     public int getGravityDegree(float gravityX, float gravityY){
         float myX = Gdx.input.getAccelerometerY();
         float myY = Gdx.input.getAccelerometerX();
