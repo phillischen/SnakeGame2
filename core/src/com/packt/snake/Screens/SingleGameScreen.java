@@ -268,17 +268,17 @@ public class SingleGameScreen implements Screen{
 
     private void checkFoodCollision(Snake snake) {
         int[] head = {snake.getHeadPosX(), snake.getHeadPosY()};
-        if (checkContain(myfood.getFoodlist(), head)) {
+        if (checkContain(myfood.getFoodlist(), head, snake)) {
             snake.lengthenBody(head[0], head[1]);
             snake.updateScore();
         }
     }
 
-    private boolean checkContain(ArrayList<int[]> al, int[] lst) {
+    private boolean checkContain(ArrayList<int[]> al, int[] lst, Snake snake) {
         for (int[] x : al) {
-            double collisionRadius = distance(x[0],x[1],lst[0],lst[1]);
-            double foodRadius = 16;
-            if (collisionRadius <= (mySnake.getSize()/2+foodRadius)) {
+            double collisionRadius = distance(x[0],x[1],lst[0]+snake.getSize()/2,lst[1]+snake.getSize()/2);
+            double foodRadius = 32;
+            if (collisionRadius <= (snake.getSize()/2+foodRadius/2)) {
                 myfood.removeFood(x);
                 return true;
             }

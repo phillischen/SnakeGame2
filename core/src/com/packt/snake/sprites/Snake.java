@@ -186,19 +186,19 @@ public class Snake implements Disposable{
     }
 
     public boolean checkEdge(){ //need to change
-        if (headPosX +100 >= myAm.mapsize){
+        if (headPosX + 50 + size >= myAm.mapsize){
             //headPosX = 0;
             return true;
         }
-        if (headPosX -50 <= 0){
+        if (headPosX - 50 <= 0){
             //headPosX = Gdx.graphics.getWidth() - SNAKE_MOVEMENT;
             return true;
         }
-        if (headPosY +100 >= myAm.mapsize){
+        if (headPosY + 50 + size >= myAm.mapsize){
             //headPosY = 0;
             return true;
         }
-        if (headPosY -50 <= 0){
+        if (headPosY - 50 <= 0){
             //headPosY = Gdx.graphics.getHeight() - SNAKE_MOVEMENT;
             return true;
         }
@@ -249,8 +249,8 @@ public class Snake implements Disposable{
         deadSnake.add(headPos);
         for (SnakeBody sb: body){
             Array<Integer> nodePos = new Array<Integer>();
-            nodePos.add(sb.x);
-            nodePos.add(sb.y);
+            nodePos.add(sb.x+size/2);
+            nodePos.add(sb.y+size/2);
             deadSnake.add(nodePos);
         }
         return deadSnake;

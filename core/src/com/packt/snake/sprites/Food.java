@@ -14,9 +14,9 @@ import java.util.Random;
 public class Food implements Disposable{
     private Texture food,background;
     private ArrayList<int[]> foodlist = new ArrayList<int[]>();
-    private static final int padding = 300;
-    private java.util.Random randomX = new java.util.Random(10);
-    private java.util.Random randomY = new java.util.Random(1);
+    private static final int padding = 500;
+    private java.util.Random randomX = new java.util.Random(250);
+    private java.util.Random randomY = new java.util.Random(3800);
     private int maxWidth;
     private int maxHeigh;
     private SnakeGame mygame;
@@ -28,9 +28,11 @@ public class Food implements Disposable{
         myAm.loadMap();
         myAm.manager.finishLoading();
         background = myAm.manager.get(myAm.MAP1);
-        maxWidth = background.getWidth() - padding;
-        maxHeigh = background.getHeight() - padding;
+        maxWidth = background.getWidth() - 2*padding;
+        maxHeigh = background.getHeight() - 2*padding;
         food = new Texture("apple.png");
+        System.out.println("x: "+maxWidth);
+        System.out.println("y: "+maxHeigh);
         placeFood();
     }
 
@@ -51,7 +53,7 @@ public class Food implements Disposable{
         for(Array<Integer> pos : deadSnake){
             Random randomX = new Random();
             Random randomY = new Random();
-            int[] foodPos = {pos.get(0)+randomX.nextInt(50),pos.get(1)+randomY.nextInt(50)};
+            int[] foodPos = {pos.get(0)+randomX.nextInt(25),pos.get(1)+randomY.nextInt(25)};
             foodlist.add(foodPos);
         }
     }
