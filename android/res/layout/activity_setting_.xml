@@ -54,31 +54,32 @@
             android:baselineAligned="false" />
 
         <RadioButton
-            android:id="@+id/radioButton8"
+            android:id="@+id/radio_Skin2"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
             android:background="@drawable/shin2" />
 
         <RadioButton
-            android:id="@+id/radioButton9"
+            android:id="@+id/radio_Skin3"
             android:layout_height="wrap_content"
             android:background="@drawable/shin3" />
 
         <RadioButton
-            android:id="@+id/radioButton10"
+            android:id="@+id/radio_Skin4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/skin4" />
 
         <RadioButton
-            android:id="@+id/radioButton11"
+            android:id="@+id/radio_Skin5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/skin5" />
 
         <RadioButton
-            android:id="@+id/radioButton12"
+            android:id="@+id/radio_Skin6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
