@@ -76,9 +76,9 @@ public class SingleGameScreen implements Screen{
         mySnake = new Snake(this.game);
 
         snakeList.add(new Snake(this.game,200,200,"AI"));
-//        snakeList.add(new Snake(this.game,400,600,"AI2"));
-//        snakeList.add(new Snake(this.game,500,700,"AI3"));
-//        snakeList.add(new Snake(this.game,800,900,"AI4"));
+//        snakeList.add(new Snake(this.game,400,600,"AI"));
+//        snakeList.add(new Snake(this.game,500,700,"AI"));
+//        snakeList.add(new Snake(this.game,800,900,"AI"));
 
         viewport = new FitViewport(myAM.getvWidth(), myAM.getvHeight());
         camera = new OrthographicCamera(screenWidth, screenHeight);
@@ -542,7 +542,8 @@ public class SingleGameScreen implements Screen{
             Snake snake = snakeList.get(i);
             Array<Snake.SnakeBody> snakeBody = snake.getBody();
             for(Snake.SnakeBody sb:snakeBody){
-                if(distance(mySnake.getHeadPosX(),mySnake.getHeadPosY(), sb.getX(),sb.getY())
+                if(distance(mySnake.getHeadPosX()+mySnake.getSize()/2,mySnake.getHeadPosY()+mySnake.getSize()/2,
+                        sb.getX()+snake.getSize()/2,sb.getY()+snake.getSize()/2)
                         < (snake.getSize()/2+mySnake.getSize()/2)){
                     return true;
                 }
