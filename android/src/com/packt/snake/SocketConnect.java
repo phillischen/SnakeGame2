@@ -210,8 +210,8 @@ public class SocketConnect extends Thread {
 
     public void dumpSingleData(){
         myAm.myUsername = username;
-        int[] param = new int[]{0,0,0,0,0};
-        int[] param2 = new int[]{0,0,0,0,0};
+        int[] param = new int[]{0,1,0,0,0};
+        int[] param2 = new int[]{0,1,0,0,0};
         myAm.userdata.put(username,param);
         myAm.userdata.put("AI",param2);
     }

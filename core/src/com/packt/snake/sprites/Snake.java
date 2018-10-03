@@ -73,6 +73,7 @@ public class Snake implements Disposable{
         for(int i=1;i<=3;i++){
             body.add(new SnakeBody(this.headPosX -i*step, this.headPosY -i*step));
         }
+        myAm.userdata.get(myUsername)[1] = 1;
     }
 
     public class SnakeBody {
@@ -113,7 +114,7 @@ public class Snake implements Disposable{
     public void updateBodyPoo(int headXBeforeUpdate,int headYBeforeUpdate, Food myFood){
         if(body.size >= 3){
             body.removeIndex(body.size-1);
-            if(myAm.userdata.get(myUsername)[1] == 1 && body.size >= 3){
+            if(myAm.userdata.get(myUsername)[1] < 0 && body.size >= 3){
                 pooCounter--;
                 if(pooCounter == 0) {
                     int foodX = body.get(body.size - 1).getX();
@@ -185,19 +186,19 @@ public class Snake implements Disposable{
     }
 
     public boolean checkEdge(){ //need to change
-        if (headPosX +50 >= myAm.mapsize){
+        if (headPosX + 50 + size >= myAm.mapsize){
             //headPosX = 0;
             return true;
         }
-        if (headPosX -50 <= 0){
+        if (headPosX - 50 <= 0){
             //headPosX = Gdx.graphics.getWidth() - SNAKE_MOVEMENT;
             return true;
         }
-        if (headPosY +50 >= myAm.mapsize){
+        if (headPosY + 50 + size >= myAm.mapsize){
             //headPosY = 0;
             return true;
         }
-        if (headPosY -50 <= 0){
+        if (headPosY - 50 <= 0){
             //headPosY = Gdx.graphics.getHeight() - SNAKE_MOVEMENT;
             return true;
         }
@@ -248,8 +249,8 @@ public class Snake implements Disposable{
         deadSnake.add(headPos);
         for (SnakeBody sb: body){
             Array<Integer> nodePos = new Array<Integer>();
-            nodePos.add(sb.x);
-            nodePos.add(sb.y);
+            nodePos.add(sb.x+size/2);
+            nodePos.add(sb.y+size/2);
             deadSnake.add(nodePos);
         }
         return deadSnake;
@@ -278,7 +279,7 @@ public class Snake implements Disposable{
     }
 
     public int getScore() {
-        return score;
+        return body.size-3;
     }
 
     public void setScore(int score) {
