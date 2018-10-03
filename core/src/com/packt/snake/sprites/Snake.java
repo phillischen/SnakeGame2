@@ -185,7 +185,7 @@ public class Snake implements Disposable{
     }
 
     public boolean checkEdge(){ //need to change
-        if (headPosX +50 >= myAm.mapsize){
+        if (headPosX +100 >= myAm.mapsize){
             //headPosX = 0;
             return true;
         }
