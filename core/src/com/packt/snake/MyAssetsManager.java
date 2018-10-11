@@ -136,6 +136,12 @@ public class MyAssetsManager{
         //System.out.println(name + "get score! "+param[2]);
     }
 
+    public void reduceScore(String name){
+        int[] param = userdata.get(name);
+        param[2] = param[2]-POINTS_PER_FOOD;
+        userdata.put(name,param);
+    }
+
     public void setNewDirection(int newd){
         newDirection = true;
         //userdata.get(myUsername)[3] = newd;

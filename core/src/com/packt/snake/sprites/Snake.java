@@ -115,6 +115,7 @@ public class Snake implements Disposable{
         if(body.size >= 3){
             body.removeIndex(body.size-1);
             if(myAm.userdata.get(myUsername)[1] < 0 && body.size >= 3){
+
                 pooCounter--;
                 if(pooCounter == 0) {
                     int foodX = body.get(body.size - 1).getX();
@@ -122,6 +123,7 @@ public class Snake implements Disposable{
                     myFood.placeFoodAt(foodX, foodY);
                     body.removeIndex(body.size - 1);
                     pooCounter = pooInterval;
+                    myAm.reduceScore(myUsername);
                 }
             }
             SnakeBody tempPart = new SnakeBody(headXBeforeUpdate,headYBeforeUpdate);
@@ -282,10 +284,6 @@ public class Snake implements Disposable{
 
     public int getScore() {
         return body.size-3;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
     }
 
     public void updateScore(){

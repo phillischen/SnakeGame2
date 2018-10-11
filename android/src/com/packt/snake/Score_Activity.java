@@ -45,6 +45,7 @@ public class Score_Activity extends AppCompatActivity {
             Intent intent = new Intent(Score_Activity.this,AdvertiseActivity.class);
             startActivity(intent);
         }
+        setupButtons();
     }
 
     private void setupButtons(){
