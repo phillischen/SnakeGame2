@@ -86,7 +86,9 @@ public class MultiGameScreen implements Screen{
         snakeList.add(mySnake);
 
         viewport = new FitViewport(myAM.getvWidth(), myAM.getvHeight());
-        camera = new OrthographicCamera(screenWidth, screenHeight);
+        //camera = new OrthographicCamera(screenWidth, screenHeight);
+        camera = new OrthographicCamera();
+        viewport.apply();
 
         camera.position.set(mySnake.getHeadPosX(), mySnake.getHeadPosY(), 0);
         screenWidth = myAM.getvWidth()*2;

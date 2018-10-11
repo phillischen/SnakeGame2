@@ -81,11 +81,13 @@ public class SingleGameScreen implements Screen{
 //        snakeList.add(new Snake(this.game,800,900,"AI"));
 
         viewport = new FitViewport(myAM.getvWidth(), myAM.getvHeight());
-        camera = new OrthographicCamera(screenWidth, screenHeight);
+        //camera = new OrthographicCamera(screenWidth, screenHeight);
+        camera = new OrthographicCamera();
+        viewport.apply();
 
         camera.position.set(mySnake.getHeadPosX(), mySnake.getHeadPosY(), 0);
-        screenWidth = myAM.getvWidth()*2;
-        screenHeight = myAM.getvHeight()*2;
+        screenWidth = myAM.getvWidth();
+        screenHeight = myAM.getvHeight();
         camera.viewportWidth = screenWidth;
         camera.viewportHeight = screenHeight;
     }
