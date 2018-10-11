@@ -39,7 +39,7 @@ public class SingleGameScreen implements Screen{
     private static final float roomOutRatio = 0.2f;
 
     private enum STATE {
-        NORMAL, SPEEDUP, GAME_OVER
+        NORMAL, GAME_OVER
     }
 
     private STATE state = STATE.NORMAL;
@@ -84,8 +84,8 @@ public class SingleGameScreen implements Screen{
         camera = new OrthographicCamera(screenWidth, screenHeight);
 
         camera.position.set(mySnake.getHeadPosX(), mySnake.getHeadPosY(), 0);
-        screenWidth = myAM.V_WIDTH*2;
-        screenHeight = myAM.V_HEIGHT*2;
+        screenWidth = myAM.getvWidth()*2;
+        screenHeight = myAM.getvHeight()*2;
         camera.viewportWidth = screenWidth;
         camera.viewportHeight = screenHeight;
     }
@@ -225,14 +225,10 @@ public class SingleGameScreen implements Screen{
                 updateAllSnakes(delta);
             }
             break;
-            case SPEEDUP: {
-//                queryInput();
-                updateAllSnakes(delta);
-            }
-            break;
             case GAME_OVER: {
                 if (stateTimer >= 1) { //wait for 1 second after died
                     //game.setScreen(new GameOverScreen(game));
+
                     game.startGameOver();
                     dispose();
                 }
@@ -466,17 +462,7 @@ public class SingleGameScreen implements Screen{
     }
 
     private void speedUp(){
-        //System.out.println("button pressed");
         myAM.userdata.get(mySnake.getMyUsername())[1] *= -1;
-        /*
-        if(state == STATE.NORMAL){
-            state = STATE.SPEEDUP;
-            myAM.userdata.get(mySnake.getMyUsername())[1] = 1;
-        }else if(state == STATE.SPEEDUP){
-            state = STATE.NORMAL;
-            myAM.userdata.get(mySnake.getMyUsername())[1] = 0;
-        }
-        */
     }
 
     public class FlingDirection implements GestureDetector.GestureListener {

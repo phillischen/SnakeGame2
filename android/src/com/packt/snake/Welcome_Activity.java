@@ -20,13 +20,40 @@ public class Welcome_Activity extends AppCompatActivity {
     private boolean waiting = false;
     private String alertMessage = "";
     private int connectResponse;
+    private int skin;
+    private int controlMode;
+    private boolean adsOff;
+    private String username;
+    private MyAssetsManager myAm;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_);
-        myConnect = SocketConnect.get();
+        myConnect = SocketConnect.getnew(this);
+        myAm = myConnect.getMyAm();
+
+        Intent extraIntent = getIntent();
+        Bundle extraBundle = extraIntent.getExtras();
+        try {
+            if (!extraBundle.isEmpty()) {
+
+                skin = extraBundle.getInt("skin");
+                controlMode = extraBundle.getInt("control");
+                adsOff = extraBundle.getBoolean("adsoff");
+                username = extraBundle.getString("name");
+                if (skin > 0){
+                    myAm.updateSetting(skin, controlMode, adsOff);
+                    myAm.myUsername = username;
+                    System.out.println("***********read bundle");
+                    myConnect.saveData();
+                }
+
+            }
+        } catch (Exception e){
+            //bundle not exist, pass
+        }
 
         getSupportActionBar().hide();
         initiateUI();
@@ -64,6 +91,8 @@ public class Welcome_Activity extends AppCompatActivity {
         multiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println("===========quit = "+myConnect.quit);
+                myConnect.setQuit(false);
                 new Join().execute();
                 //while(true){ alert.setMessage("Connection Failed"); }
             }
@@ -142,8 +171,16 @@ public class Welcome_Activity extends AppCompatActivity {
                             MyTimer.cancel();
                             myConnect.setQuit(true);
                             System.out.println("===========cancel is triggerd");
+                            myConnect = SocketConnect.getnew(Welcome_Activity.this);
+                            myAm = myConnect.getMyAm();
+                            if (skin != 0){
+                                myAm.updateSetting(skin,controlMode,adsOff);
+                                myAm.myUsername = username;
+                                myConnect.saveData();
+                            }
+
                             dialog.dismiss();
-                            myConnect.renewSocket();
+                            //myConnect.renewSocket();
                             //myConnect = SocketConnect.get();
 
                         }
@@ -159,9 +196,14 @@ public class Welcome_Activity extends AppCompatActivity {
                 alert.setMessage(myConnect.getUserlist());
                 alertMessage = myConnect.getUserlist();
                 //myConnect.setWaiting(true);
+                System.out.println("THREAD IS ALIGE?"+myConnect.isAlive());
                 myConnect.start();
                 MyTimer.start();
                 System.out.println("thread started");
+            } else if (response == 2){
+                alert.setMessage("Username duplicate");
+            } else if (response == 3){
+                alert.setMessage("Game is ongoing, failed to join the room");
             } else {
                 //alertMessage = "Connection Failed";
                 alert.setMessage("Connection Failed");

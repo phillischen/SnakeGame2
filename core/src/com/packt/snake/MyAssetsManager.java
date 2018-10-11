@@ -34,7 +34,7 @@ public class MyAssetsManager{
 
     //parameters
     public static final int V_WIDTH = 960;
-    public static final int V_HEIGHT = 560;
+    public static final int V_HEIGHT = 520;
     private static final int POINTS_PER_FOOD = 10;
     public SpriteBatch batch;//only need one, allow all screen to acces
     //public int score = 0;
@@ -55,6 +55,8 @@ public class MyAssetsManager{
     public boolean serverError = false;
     public boolean adsOff = false;
     public int myColor = 1;
+    public boolean speedupchange = false;
+    public int numberOfSkin = 1;
 
 
     /////////////////resource loader//////////////////////
@@ -103,6 +105,12 @@ public class MyAssetsManager{
                 myheadskin = SNAKEHEAD6;
                 mybodyskin = SNAKEBODY6;
                 break;
+            default:
+                    manager.load(SNAKEHEAD1, Texture.class);
+                    manager.load(SNAKEBODY1,Texture.class);
+                    myheadskin = SNAKEHEAD1;
+                    mybodyskin = SNAKEBODY1;
+
         }
 
     }
@@ -128,12 +136,9 @@ public class MyAssetsManager{
         //System.out.println(name + "get score! "+param[2]);
     }
 
-
     public void setNewDirection(int newd){
         newDirection = true;
-        int[] param = userdata.get(myUsername);
-        param[3] = newd;
-        userdata.put(myUsername,param);
+        //userdata.get(myUsername)[3] = newd;
         direction = newd;
     }
 
@@ -201,5 +206,14 @@ public class MyAssetsManager{
         myColor = color;
         controlMode = control;
         adsOff = ad;
+    }
+
+    public void speedChanger(String name){
+        userdata.get(name)[1] *= -1;
+    }
+
+    public void incrementSkin(){
+        if (numberOfSkin < 6)
+            numberOfSkin ++;
     }
 }

@@ -45,7 +45,7 @@ public class Snake implements Disposable{
         this.game = game;
         myAm = this.game.getAm();
         myUsername = myAm.myUsername;
-        myAm.loadSnake(1);
+        myAm.loadSnake(myAm.myColor);
         myAm.manager.finishLoading();
         headTexture = myAm.manager.get(myAm.myheadskin);
         bodyTexture = myAm.manager.get(myAm.mybodyskin);
@@ -64,7 +64,7 @@ public class Snake implements Disposable{
         this.headPosY = headPosY;
 
         //load skin based on name!!!
-        myAm.loadSnake(5);
+        myAm.loadSnake(myAm.userdata.get(myUsername)[0]);
         myAm.manager.finishLoading();
         headTexture = myAm.manager.get(myAm.myheadskin);
         bodyTexture = myAm.manager.get(myAm.mybodyskin);

@@ -46,15 +46,25 @@ public class Setting_Activity extends AppCompatActivity {
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                myAm.updateSetting(skinno,controlno,adsOff);
-                myAm.myUsername = usernameText.getText().toString();
+                //myAm.updateSetting(skinno,controlno,adsOff);
+                //myAm.myUsername = usernameText.getText().toString();
+                Bundle bundle = new Bundle();
+                bundle.putInt("skin",skinno);
+                bundle.putInt("control",controlno);
+                bundle.putBoolean("adsoff",adsOff);
+                if (usernameText.getText().toString().equals(""))
+                    bundle.putString("name","player");
+                else
+                    bundle.putString("name",usernameText.getText().toString());
                 Intent intent = new Intent(Setting_Activity.this,Welcome_Activity.class);
+                intent.putExtras(bundle);
                 startActivity(intent);
                 Setting_Activity.this.finish();
             }
         });
 
         usernameText = findViewById(R.id.text_name);
+        System.out.println("*******SETTING username = "+myAm.myUsername);
         usernameText.setText(myAm.myUsername);
 
 

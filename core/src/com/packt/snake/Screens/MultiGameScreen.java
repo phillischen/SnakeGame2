@@ -8,8 +8,19 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.packt.snake.MyAssetsManager;
@@ -21,8 +32,6 @@ import com.packt.snake.sprites.Snake;
 import java.util.ArrayList;
 
 public class MultiGameScreen implements Screen{
-
-    private static final float MOVE_TIME = 0.03F;
 
     private static float speed = 0.1f;
     private float timer = speed;
@@ -50,9 +59,15 @@ public class MultiGameScreen implements Screen{
     private int directionDegree = 0, lastdirection = directionDegree;
 
     private float stateTimer;//count how many seconds the current state last
-    private BitmapFont bitmapFont;
-    private GlyphLayout layout = new GlyphLayout();
+    //private BitmapFont bitmapFont;
+    //private GlyphLayout layout = new GlyphLayout();
     FlingDirection myFlingDirection;
+    private Stage myStage;
+    private Skin mySkin, mySkin2;
+    private Touchpad touchpad;
+
+    private float gravityX;
+    private float gravityY;
 
     public MultiGameScreen(SnakeGame game) {
         this.game = game;
@@ -68,31 +83,107 @@ public class MultiGameScreen implements Screen{
                 snakeList.add(new Snake(this.game,position2,position2,name));
             }
         }
+        snakeList.add(mySnake);
 
-        viewport = new FitViewport(myAM.V_WIDTH, myAM.V_HEIGHT);
+        viewport = new FitViewport(myAM.getvWidth(), myAM.getvHeight());
         camera = new OrthographicCamera(screenWidth, screenHeight);
 
         camera.position.set(mySnake.getHeadPosX(), mySnake.getHeadPosY(), 0);
-        screenWidth = myAM.V_WIDTH*3;
-        screenHeight = myAM.V_HEIGHT*3;
+        screenWidth = myAM.getvWidth()*2;
+        screenHeight = myAM.getvHeight()*2;
         camera.viewportWidth = screenWidth;
         camera.viewportHeight = screenHeight;
-
-        hud = new Hud(myAM);
 
     }
 
     @Override
     public void show() {
         camera.update();
+        addUI();
+        setControl();
+    }
+
+    private void addUI(){
+        hud = new Hud(myAM);
         myAM.loadMap();
         myAM.manager.finishLoading();
         background = myAM.manager.get(myAM.MAP1);
-        //background = new Texture("map10000.png");
         myAM.mapsize = background.getWidth();
-        bitmapFont = new BitmapFont();
-        myFlingDirection = new FlingDirection();
-        Gdx.input.setInputProcessor(new GestureDetector(myFlingDirection));
+
+        myStage = new Stage(viewport, myAM.batch);
+
+        myAM.loadHubResource();
+        myAM.manager.finishLoading();
+        Texture texture = myAM.manager.get(myAM.SPEEDUP);
+        Image image1 = new Image(texture);
+        image1.setPosition(0,0);
+        myStage.addActor(image1);
+
+    }
+
+    private void setControl(){
+        if (myAM.controlMode == 1 || myAM.controlMode == 3){ //fling control
+            myFlingDirection = new FlingDirection();
+            Gdx.input.setInputProcessor(new GestureDetector(myFlingDirection));
+            hud.addImage();
+
+
+        } else if (myAM.controlMode == 2){ //joystick
+            Gdx.input.setInputProcessor(myStage);
+            myAM.loadSkin();
+            myAM.loadSkin2();
+            myAM.manager.finishLoading();
+            mySkin = myAM.manager.get(myAM.SKIN);
+            mySkin2 = myAM.manager.get(myAM.SKIN2);
+
+            Button button1 = new TextButton("GO",mySkin);
+            button1.setSize(90,90);
+            button1.setPosition(5,5);
+
+            button1.addListener(new InputListener(){
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    System.out.println("button pressed");
+                    myAM.userdata.get(myAM.myUsername)[1] *= -1;
+                    return super.touchDown(event, x, y, pointer, button);
+                }
+            });
+            myStage.addActor(button1);
+
+            Texture touchpadbase = new Texture("handlebase.png");
+            Texture knob = new Texture("handle.png");
+            TextureRegionDrawable baseRegion = new TextureRegionDrawable(new TextureRegion(touchpadbase,0,0,200,200));
+            TextureRegionDrawable knobRegion = new TextureRegionDrawable(new TextureRegion(knob,0,0,50,50));
+            Touchpad.TouchpadStyle style= new Touchpad.TouchpadStyle(baseRegion,knobRegion);
+            touchpad = new Touchpad(30,style);
+            touchpad.setBounds(myAM.getvWidth()-155,5,150,150);
+
+            touchpad.addListener(new InputListener(){
+
+                @Override
+                public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                    super.touchDragged(event, x, y, pointer);
+                    float deltaX = touchpad.getKnobPercentX();
+                    float deltaY = touchpad.getKnobPercentY();
+                    System.out.println("===============x = "+ deltaX+"; y = "+deltaY);
+                }
+            });
+
+            myStage.addActor(touchpad);
+            hud.addImage();
+
+        } else { //gravity
+            Gdx.input.setInputProcessor(hud.stage);
+            myAM.loadHubResource();
+            myAM.manager.finishLoading();
+            Texture texture = myAM.manager.get(myAM.SPEEDUP);
+            Image image1 = new Image(texture);
+            image1.setPosition(0,0);
+            myStage.addActor(image1);
+
+        }
+
+
     }
 
     private int getInitialPosition(String name){
@@ -105,9 +196,6 @@ public class MultiGameScreen implements Screen{
 
     @Override
     public void resize(int width, int height) {
-        //not much use for android phone, bcs they cannot resize the window
-        //camera.viewportWidth = width/2;
-        //camera.viewportHeight = height/2;
     }
 
     @Override
@@ -127,7 +215,6 @@ public class MultiGameScreen implements Screen{
 
     @Override
     public void dispose() {
-        //background.dispose();
         mySnake.dispose();
         hud.dispose();
     }
@@ -141,13 +228,11 @@ public class MultiGameScreen implements Screen{
         previousState = state;
         switch (state) {
             case NORMAL: {
-//                queryInput();
                 updateSnake(delta);
             }
             break;
             case GAME_OVER: {
                 if (stateTimer >= 1) { //wait for 1 second after died
-                    //game.setScreen(new GameOverScreen(game));
                     game.startGameOver();
                     dispose();
                 }
@@ -168,7 +253,6 @@ public class MultiGameScreen implements Screen{
         myAM.batch.setTransformMatrix(camera.view);
 
         game.batch.begin();
-        // game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         game.batch.draw(background, 0, 0);
         mySnake.drawSnake(game.batch);
         for(Snake snake:snakeList){
@@ -180,6 +264,7 @@ public class MultiGameScreen implements Screen{
         }
         myAM.batch.end();
 
+        myStage.draw();
         //draw the score hub
         myAM.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
@@ -187,19 +272,17 @@ public class MultiGameScreen implements Screen{
 
     private void checkFoodCollision(Snake snake) {
         int[] head = {snake.getHeadPosX(), snake.getHeadPosY()};
-        //Gdx.app.log("MYTAG","head = "+Arrays.toString(head));
-        if (checkContain(myfood.getFoodlist(), head)) {
-            //Gdx.app.log("MYTAG","yes, hit the food!");
+        if (checkContain(myfood.getFoodlist(), head, snake)) {
             snake.lengthenBody(head[0], head[1]);
             snake.updateScore();
         }
     }
 
-    private boolean checkContain(ArrayList<int[]> al, int[] lst) {
+    private boolean checkContain(ArrayList<int[]> al, int[] lst, Snake snake) {
         for (int[] x : al) {
-            float collisionRadius = (x[0] - lst[0]) * (x[0] - lst[0]) + (x[1] - lst[1]) * (x[1] - lst[1]);
-            //Gdx.app.log("collisionRadius", "asd");
-            if (collisionRadius <= (mySnake.getSize()/2+16)*(mySnake.getSize()/2+16)) {
+            double collisionRadius = distance(x[0],x[1],lst[0]+snake.getSize()/2,lst[1]+snake.getSize()/2);
+            double foodRadius = 32;
+            if (collisionRadius <= (snake.getSize()/2+foodRadius/2)) {
                 myfood.removeFood(x);
                 return true;
             }
@@ -213,26 +296,55 @@ public class MultiGameScreen implements Screen{
             timer=speed;
 
             //////////update local snake//////////////////
-            int snakeXBeforeUpdate = mySnake.getHeadPosX();
-            int snakeYBeforeUpdate = mySnake.getHeadPosY();
+            int speedLimit = 1;
+            if(myAM.userdata.get(mySnake.getMyUsername())[1] < 0){
+                if(mySnake.getBody().size > 3){
+                    //speedLimit = 1+myAM.userdata.get(mySnake.getMyUsername())[1];
+                    speedLimit = 2;
+                    System.out.println("Speed limit = "+speedLimit);
+                }
+            }
+
+            if (myAM.controlMode == 3)
+                directionDegree = getGravityDegree(gravityX,gravityY);
+            else if (myAM.controlMode == 2)
+                getTouchpadDegree();
+
+            //tell server if there is a new direction
             if (lastdirection != directionDegree){
                 lastdirection = directionDegree;
                 myAM.setNewDirection(directionDegree);
             }
-            mySnake.setSettingDirection(myAM.getMyDirection());
-            mySnake.moveSnake();
 
-            if (mySnake.checkEdge()){
-                mySnake.setHeadPosX(snakeXBeforeUpdate);
-                mySnake.setHeadPosY(snakeYBeforeUpdate);
-                state = STATE.GAME_OVER;
-            } else {
-                mySnake.updateBodyPartsPosition(snakeXBeforeUpdate,snakeYBeforeUpdate);
+            for(int i=0;i<speedLimit;i++) {
+                int snakeXBeforeUpdate = mySnake.getHeadPosX();
+                int snakeYBeforeUpdate = mySnake.getHeadPosY();
+                mySnake.setSettingDirection(myAM.getMyDirection());
+                mySnake.moveSnake();
+                if (mySnake.checkEdge()){
+                    state = STATE.GAME_OVER;
+                }
+
+                checkFoodCollision(mySnake);
+                myfood.placeFood();
+                mySnake.updateSize();
+
+                boolean isBodyCollision = bodyCollision(mySnake, snakeList.size() - 1, snakeList);
+                if (isBodyCollision) {
+                    state = STATE.GAME_OVER;
+                }
+
+                if (state == STATE.GAME_OVER) {
+                    mySnake.setHeadPosX(snakeXBeforeUpdate);
+                    mySnake.setHeadPosY(snakeYBeforeUpdate);
+                    myfood.placeFood(mySnake.getDeadSnake());
+                    break;
+                } else {
+                    mySnake.updateBodyPoo(snakeXBeforeUpdate, snakeYBeforeUpdate, myfood);
+                }
             }
 
-            checkFoodCollision(mySnake);
-            myfood.placeFood();
-            mySnake.updateSize();
+
             /////////update remote snake//////////////////////
             if (myAM.disconnect) { //get rid of the disconnected snake
                 for (int i = snakeList.size() - 1; i >= 0; i--) {
@@ -243,33 +355,44 @@ public class MultiGameScreen implements Screen{
                     }
                 }
             }
-            for (int i = snakeList.size()-1;i>=0;i--){
+
+            for (int i = snakeList.size()-2;i>=0;i--){
                 Snake snake = snakeList.get(i);
 
-                int snkXB4Update = snake.getHeadPosX();
-                int snkYB4Update = snake .getHeadPosY();
-                snake.setSettingDirection(myAM.getRemoteDirection(snake.getMyUsername()));
-                snake.moveSnake();
-                if(snake.checkEdge()){
-                    snake.setHeadPosX(snakeXBeforeUpdate);
-                    snake.setHeadPosY(snakeYBeforeUpdate);
-                    hud.updateDead(snake.getMyUsername());
-                    snakeList.remove(i);//really needed?
-
-                    //state = STATE.GAME_OVER;
-
-                }else{
-                    snake.updateBodyPartsPosition(snkXB4Update,snkYB4Update);
+                speedLimit = 1;
+                if(myAM.userdata.get(snake.getMyUsername())[1] < 0){
+                    if(snake.getBody().size > 3){
+                        speedLimit = 2;
+                    }
                 }
-                checkFoodCollision(snake);
-                myfood.placeFood();
-                snake.updateSize();
+
+                for(int j=0;j<speedLimit;j++) {
+                    int snkXB4Update = snake.getHeadPosX();
+                    int snkYB4Update = snake .getHeadPosY();
+                    snake.setSettingDirection(myAM.getRemoteDirection(snake.getMyUsername()));
+                    snake.moveSnake();
+
+                    if (snake.checkEdge() || bodyCollision(snake, i, snakeList)) {
+                        snake.setHeadPosX(snkXB4Update);
+                        snake.setHeadPosY(snkYB4Update);
+                        myfood.placeFood(snake.getDeadSnake());
+                        hud.updateDead(snake.getMyUsername());
+                        snakeList.remove(i);
+                        break;
+                    } else {
+                        snake.updateBodyPoo(snkXB4Update,snkYB4Update,myfood);
+                    }
+                    checkFoodCollision(snake);
+                    myfood.placeFood();
+                    snake.updateSize();
+                }
+
             }
 
 
             ////////////////////////////////////////////////////
             camera.position.set(mySnake.getHeadPosX(), mySnake.getHeadPosY(), 0);
-            int i = mySnake.getScore()/100;
+            float i = mySnake.getScore()/10;
             camera.viewportWidth = screenWidth * (1+i*roomOutRatio);
             camera.viewportHeight = screenHeight * (1+i*roomOutRatio);
 
@@ -280,8 +403,6 @@ public class MultiGameScreen implements Screen{
         }
     }
 
-
-
     public class FlingDirection implements GestureDetector.GestureListener {
         @Override
         public boolean touchDown(float x, float y, int pointer, int button) {
@@ -290,27 +411,10 @@ public class MultiGameScreen implements Screen{
 
         @Override
         public boolean tap(float x, float y, int count, int button) {
-            float velocityX = x - mySnake.getHeadPosX();
-            System.out.println("velocity x = "+mySnake.getHeadPosX()+ ", "+x);
-            float velocityY = mySnake.getHeadPosY() - y;
-            System.out.println("velocity y = "+mySnake.getHeadPosY()+ ", "+y);
-            if (stateTimer < 0.5)
-                return false;
-            if (velocityX >= 0 && velocityY >= 0) {
-                directionDegree = 360 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
-                //System.out.println("degree = " + directionDegree);
-            } else if (velocityX >= 0 && velocityY <= 0) {
-                directionDegree = (int)Math.toDegrees(Math.atan(-velocityY / velocityX));
-                //System.out.println("degree = " + directionDegree);
-            } else if (velocityX <= 0 && velocityY >= 0) {
-                directionDegree = (int)Math.toDegrees(Math.atan(-velocityY / velocityX)) + 180;
-                //System.out.println("degree = " + directionDegree);
-            } else {
-                directionDegree = 180 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
-                //System.out.println("degree = " + directionDegree);
+            System.out.println("x = "+x+"; y = "+y);
+            if (x<185 && y > 845) {
+                speedUp();
             }
-            //mySnake.setSettingDirection(directionDegree);
-            System.out.println("TAP called! "+directionDegree);
             return false;
         }
 
@@ -347,28 +451,80 @@ public class MultiGameScreen implements Screen{
         @Override
         public boolean fling(float velocityX, float velocityY, int button) {
             //System.out.println("fling called!");
+            if (myAM.controlMode == 3) //gravity mode, disable fling
+                return false;
             if (stateTimer < 0.5)
                 return false;
-            if (velocityX >= 0 && velocityY >= 0) {
-                directionDegree = 360 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
-                //System.out.println("degree = " + directionDegree);
-            } else if (velocityX >= 0 && velocityY <= 0) {
-                directionDegree = (int)Math.toDegrees(Math.atan(-velocityY / velocityX));
-                //System.out.println("degree = " + directionDegree);
-            } else if (velocityX <= 0 && velocityY >= 0) {
-                directionDegree = (int)Math.toDegrees(Math.atan(-velocityY / velocityX)) + 180;
-                //System.out.println("degree = " + directionDegree);
-            } else {
-                directionDegree = 180 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
-                //System.out.println("degree = " + directionDegree);
-            }
-            //mySnake.setSettingDirection(directionDegree);
-            System.out.println("fling called! "+directionDegree);
+            directionDegree = computeDirectionDegree(velocityX,velocityY);
             return false;
         }
 
 
     }
 
+    private double distance(double x1, double y1, double x2, double y2){
+        return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+    }
+
+    private int getGravityDegree(float gravityX, float gravityY){
+        float myX = Gdx.input.getAccelerometerY();
+        float myY = Gdx.input.getAccelerometerX();
+        //System.out.println("X = "+myX+"; Y = "+myY);
+        int degree = computeDirectionDegree(myX,myY);
+        directionDegree = degree;
+        return degree;
+    }
+
+    private int computeDirectionDegree(float velocityX ,float velocityY){
+        int degree;
+        if (velocityX >= 0 && velocityY >= 0) {
+            degree = 360 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
+            //System.out.println("degree = " + directionDegree);
+        } else if (velocityX >= 0 && velocityY <= 0) {
+            degree = (int)Math.toDegrees(Math.atan(-velocityY / velocityX));
+            //System.out.println("degree = " + directionDegree);
+        } else if (velocityX <= 0 && velocityY >= 0) {
+            degree = (int)Math.toDegrees(Math.atan(-velocityY / velocityX)) + 180;
+            //System.out.println("degree = " + directionDegree);
+        } else {
+            degree = 180 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
+            //System.out.println("degree = " + directionDegree);
+        }
+        //System.out.println("==============degree = "+degree);
+        return degree;
+    }
+
+    private void getTouchpadDegree(){
+        if (touchpad.isTouched()){
+            float deltaX = touchpad.getKnobPercentX();
+            float deltaY = touchpad.getKnobPercentY();
+            int degree = computeDirectionDegree(deltaX,-deltaY);
+            directionDegree = degree;
+            //System.out.println("x = "+ deltaX+"; y = "+deltaY+"; degree = "+degree);
+
+        }
+    }
+
+    private boolean bodyCollision(Snake mySnake,int myIndex, ArrayList<Snake> snakeList){
+
+        for(int i = 0;i<snakeList.size();i++){
+            if(myIndex == i)continue;
+            Snake snake = snakeList.get(i);
+            Array<Snake.SnakeBody> snakeBody = snake.getBody();
+            for(Snake.SnakeBody sb:snakeBody){
+                if(distance(mySnake.getHeadPosX()+mySnake.getSize()/2,mySnake.getHeadPosY()+mySnake.getSize()/2,
+                        sb.getX()+snake.getSize()/2,sb.getY()+snake.getSize()/2)
+                        < (snake.getSize()/2+mySnake.getSize()/2)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void speedUp(){
+        //myAM.userdata.get(mySnake.getMyUsername())[1] *= -1;
+        myAM.speedupchange = true;
+    }
 }
 
