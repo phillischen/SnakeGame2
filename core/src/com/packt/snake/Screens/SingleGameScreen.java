@@ -28,6 +28,7 @@ import com.packt.snake.MyAssetsManager;
 import com.packt.snake.Scenes.Hud;
 import com.packt.snake.SnakeGame;
 import com.packt.snake.sprites.Food;
+import com.packt.snake.sprites.Radar;
 import com.packt.snake.sprites.Snake;
 
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public class SingleGameScreen implements Screen{
     private Snake mySnake;
     private ArrayList<Snake> snakeList = new ArrayList<Snake>();
     private int directionDegree = 0;
+    private Radar radar;
 
     private float stateTimer;//count how many seconds the current state last
     private GlyphLayout layout = new GlyphLayout();
@@ -74,6 +76,7 @@ public class SingleGameScreen implements Screen{
         myAM = this.game.getAm();
         myfood = new Food(this.game);
         mySnake = new Snake(this.game);
+        radar = new Radar(5100,5100);
 
         snakeList.add(new Snake(this.game,200,200,"AI"));
 //        snakeList.add(new Snake(this.game,400,600,"AI"));
@@ -419,9 +422,11 @@ public class SingleGameScreen implements Screen{
             camera.viewportHeight = screenHeight * (1+i*roomOutRatio);
 
             camera.update();
-
             hud.updateScore();
 
+            /*---update radar---*/
+            radar.updateRadar(mySnake.getHeadPosX(),mySnake.getHeadPosY(),myfood);
+            hud.addRadar(radar);
         }
     }
 
