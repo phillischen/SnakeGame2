@@ -13,7 +13,8 @@ import java.util.Random;
 
 public class Food implements Disposable{
     private Texture food,background;
-    private ArrayList<int[]> foodlist = new ArrayList<int[]>();
+//    private ArrayList<int[]> foodlist = new ArrayList<int[]>();
+    private ArrayList<SpeFood> foodlist = new ArrayList<SpeFood>();
     private static final int padding = 500;
     private java.util.Random randomX = new java.util.Random(250);
     private java.util.Random randomY = new java.util.Random(3800);
@@ -31,9 +32,42 @@ public class Food implements Disposable{
         maxWidth = background.getWidth() - 2*padding;
         maxHeigh = background.getHeight() - 2*padding;
         food = new Texture("apple.png");
-        System.out.println("x: "+maxWidth);
-        System.out.println("y: "+maxHeigh);
+//        System.out.println("x: "+maxWidth);
+//        System.out.println("y: "+maxHeigh);
         placeFood();
+    }
+
+    public class SpeFood{
+        private String type;
+        private Texture texture;
+        private int posX;
+        private int posY;
+
+        public SpeFood(String type, int posX, int posY) {
+            this.type = type;
+            this.posX = posX;
+            this.posY = posY;
+
+            if(type.equals("Normal")){
+                texture = new Texture("apple.png");
+            }else if(type.equals("RevDirection")){
+                texture = new Texture("greenapple.png");
+            }else if(type.equals("SpeedUp")){
+                texture = new Texture("yellowapple.png");
+            }
+        }
+
+        public Texture getTexture() {
+            return texture;
+        }
+
+        public int getPosX() {
+            return posX;
+        }
+
+        public int getPosY() {
+            return posY;
+        }
     }
 
     public void placeFood(){ //randomly put food on screen
@@ -43,9 +77,10 @@ public class Food implements Disposable{
                 int foodX = padding+randomX.nextInt(maxWidth);
                 int foodY = padding+randomY.nextInt(maxHeigh);
                 //need a method to avoid food on snake!!
-                int[] x = {foodX,foodY};
-                foodlist.add(x);
-            }while (foodlist.size() < 20);
+//                int[] x = {foodX,foodY};
+                SpeFood temp = new SpeFood("Normal",foodX,foodY);
+                foodlist.add(temp);
+            }while (foodlist.size() < 30);
         }
     }
 
@@ -54,17 +89,29 @@ public class Food implements Disposable{
             Random randomX = new Random();
             Random randomY = new Random();
             int[] foodPos = {pos.get(0)+randomX.nextInt(25),pos.get(1)+randomY.nextInt(25)};
-            foodlist.add(foodPos);
+            SpeFood temp = new SpeFood("Normal",foodPos[0],foodPos[1]);
+            foodlist.add(temp);
+//            foodlist.add(foodPos);
         }
     }
 
     public void placeFoodAt(int x, int y){
         int[] pos = {x,y};
-        foodlist.add(pos);
+//        foodlist.add(pos);
+        SpeFood temp = new SpeFood("Normal",pos[0],pos[1]);
+        foodlist.add(temp);
     }
 
-
     public ArrayList<int[]> getFoodlist() {
+        ArrayList<int[]> temp = new ArrayList<int[]>();
+        for(SpeFood x : foodlist){
+            int[] cao = {x.getPosX(),x.getPosY()};
+            temp.add(cao);
+        }
+        return temp;
+    }
+
+    public ArrayList<SpeFood> getFoodObj() {
         return foodlist;
     }
 
@@ -72,13 +119,29 @@ public class Food implements Disposable{
         return food;
     }
 
-    public void removeFood(int[] headpostion){
+
+
+//    public void removeFood(int[] headpostion){
+//        arraylistRemove(foodlist,headpostion);
+//    }
+//
+//    private ArrayList<int[]> arraylistRemove(ArrayList<int[]> al, int[] lst){
+//        for (int[] x: al){
+//            if (Arrays.equals(x,lst)){
+//                al.remove(x);
+//                return al;
+//            }
+//        }
+//        return al;
+//    }
+
+    public void removeFood(SpeFood headpostion){
         arraylistRemove(foodlist,headpostion);
     }
 
-    private ArrayList<int[]> arraylistRemove(ArrayList<int[]> al, int[] lst){
-        for (int[] x: al){
-            if (Arrays.equals(x,lst)){
+    private ArrayList<SpeFood> arraylistRemove(ArrayList<SpeFood> al, SpeFood lst){
+        for (SpeFood x: al){
+            if (x.getPosX() == lst.getPosX() && x.getPosY() == lst.getPosY()){
                 al.remove(x);
                 return al;
             }

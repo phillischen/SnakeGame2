@@ -261,8 +261,8 @@ public class SingleGameScreen implements Screen{
             snake.drawSnake(game.batch);
         }
         //draw food
-        for (int[] x : myfood.getFoodlist()) {
-            myAM.batch.draw(myfood.getFood(), x[0], x[1]);
+        for (Food.SpeFood x : myfood.getFoodObj()) {
+            myAM.batch.draw(x.getTexture(), x.getPosX(), x.getPosY());
         }
         myAM.batch.end();
 
@@ -277,15 +277,15 @@ public class SingleGameScreen implements Screen{
 
     private void checkFoodCollision(Snake snake) {
         int[] head = {snake.getHeadPosX(), snake.getHeadPosY()};
-        if (checkContain(myfood.getFoodlist(), head, snake)) {
+        if (checkContain(myfood.getFoodObj(), head, snake)) {
             snake.lengthenBody(head[0], head[1]);
             snake.updateScore();
         }
     }
 
-    private boolean checkContain(ArrayList<int[]> al, int[] lst, Snake snake) {
-        for (int[] x : al) {
-            double collisionRadius = distance(x[0],x[1],lst[0]+snake.getSize()/2,lst[1]+snake.getSize()/2);
+    private boolean checkContain(ArrayList<Food.SpeFood> al, int[] lst, Snake snake) {
+        for (Food.SpeFood x : al) {
+            double collisionRadius = distance(x.getPosX(),x.getPosY(),lst[0]+snake.getSize()/2,lst[1]+snake.getSize()/2);
             double foodRadius = 32;
             if (collisionRadius <= (snake.getSize()/2+foodRadius/2)) {
                 myfood.removeFood(x);
