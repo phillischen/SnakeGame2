@@ -23,6 +23,7 @@ import com.packt.snake.MyAssetsManager;
 import com.packt.snake.Screens.MultiGameScreen;
 import com.packt.snake.Screens.SingleGameScreen;
 import com.packt.snake.SnakeGame;
+import com.packt.snake.sprites.Radar;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -126,6 +127,13 @@ public class Hud implements Disposable{
 
     }
 
+    public void addRadar(Radar radar){
+        Texture texture = radar.getRadarTexture();
+        Image image = new Image(texture);
+        image.setPosition(800,250);
+        stage.addActor(image);
+    }
+
     public void updateScore(){
         if (myAm.disconnect){
             System.out.println("==============hud know disconnect = "+myAm.disconnectP);
@@ -194,6 +202,8 @@ public class Hud implements Disposable{
             return row.score - this.score ;
         }
     }
+
+
 
     @Override
     public void dispose() {

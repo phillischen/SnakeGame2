@@ -37,7 +37,7 @@ public class Food implements Disposable{
     }
 
     public void placeFood(){ //randomly put food on screen
-        if (foodlist.size()<50){ //no food no screen
+        if (foodlist.size()<30){ //no food no screen
             do{
                 //need to change to unified canvas size
                 int foodX = padding+randomX.nextInt(maxWidth);
