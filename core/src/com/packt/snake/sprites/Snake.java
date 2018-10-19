@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.packt.snake.MyAssetsManager;
@@ -137,7 +138,12 @@ public class Snake implements Disposable{
         for(int i = body.size-1;i>=0;i--){
             body.get(i).draw(sb);
         }
-        sb.draw(headTexture, headPosX, headPosY);
+        TextureRegion headTextureRegion = new TextureRegion(headTexture);
+//        sb.draw(headTexture, headPosX, headPosY);
+        sb.draw(headTextureRegion, headPosX, headPosY,
+                size/2, size/2,
+                headTexture.getWidth(), headTexture.getHeight(),
+                1, 1, (float)currentDirection);
     }
 
     public void lengthenBody(int foodX, int foodY){
