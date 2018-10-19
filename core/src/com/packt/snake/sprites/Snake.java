@@ -38,6 +38,7 @@ public class Snake implements Disposable{
     private String myUsername;
     private int pooCounter = pooInterval;
     private Pixmap pixmapOrigin, newPixmap;
+    private int yellowAppleTimer = 0;
 
     private MyAssetsManager myAm;
 
@@ -280,6 +281,9 @@ public class Snake implements Disposable{
     public void updateSize(){
         size = initSize + body.size;
         resizeBody(size);
+        if(yellowAppleTimer > 0){
+            yellowAppleTimer--;
+        }
     }
 
     public int getScore() {
@@ -332,5 +336,13 @@ public class Snake implements Disposable{
 
     public void setStep(int step) {
         this.step = step;
+    }
+
+    public int getYellowAppleTimer() {
+        return yellowAppleTimer;
+    }
+
+    public void setYellowAppleTimer(int yellowAppleTimer) {
+        this.yellowAppleTimer = yellowAppleTimer;
     }
 }

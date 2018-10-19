@@ -288,6 +288,9 @@ public class SingleGameScreen implements Screen{
             double collisionRadius = distance(x.getPosX(),x.getPosY(),lst[0]+snake.getSize()/2,lst[1]+snake.getSize()/2);
             double foodRadius = 32;
             if (collisionRadius <= (snake.getSize()/2+foodRadius/2)) {
+                if(x.getType().equals("SpeedUp")){
+                    snake.setYellowAppleTimer(40);
+                }
                 myfood.removeFood(x);
                 return true;
             }
@@ -340,6 +343,10 @@ public class SingleGameScreen implements Screen{
                 }
             }
 
+            if(mySnake.getYellowAppleTimer()>0){
+                speedLimit = 2;
+            }
+
             if (myAM.controlMode == 3)
                 mySnake.setSettingDirection(getGravityDegree(gravityX,gravityY));
             else if (myAM.controlMode == 1)
@@ -389,6 +396,10 @@ public class SingleGameScreen implements Screen{
                     if(snake.getBody().size > 3){
                         speedLimit = 2;
                     }
+                }
+
+                if(snake.getYellowAppleTimer()>0){
+                    speedLimit = 2;
                 }
 
                 for(int j=0;j<speedLimit;j++) {

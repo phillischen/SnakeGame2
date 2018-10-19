@@ -68,6 +68,10 @@ public class Food implements Disposable{
         public int getPosY() {
             return posY;
         }
+
+        public String getType() {
+            return type;
+        }
     }
 
     public void placeFood(){ //randomly put food on screen
@@ -78,7 +82,13 @@ public class Food implements Disposable{
                 int foodY = padding+randomY.nextInt(maxHeigh);
                 //need a method to avoid food on snake!!
 //                int[] x = {foodX,foodY};
-                SpeFood temp = new SpeFood("Normal",foodX,foodY);
+                SpeFood temp;
+                if(Math.random() < 0.9){
+                    temp = new SpeFood("Normal",foodX,foodY);
+                }
+                else{
+                    temp = new SpeFood("SpeedUp",foodX,foodY);
+                }
                 foodlist.add(temp);
             }while (foodlist.size() < 30);
         }
