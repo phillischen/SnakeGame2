@@ -17,8 +17,10 @@
         android:label="@string/app_name"
         android:theme="@style/GdxTheme">
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
         <activity
             android:name=".Welcome_Activity"
             android:screenOrientation="landscape"
@@ -37,18 +39,31 @@
         <activity
             android:name=".Score_Activity"
             android:screenOrientation="landscape"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="http"
+                    android:host="slither.io"
+                    android:pathPrefix="/receipe" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Setting_Activity"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme" />
-        <activity android:name=".AdvertiseActivity"
+        <activity
+            android:name=".AdvertiseActivity"
             android:theme="@style/AppTheme.PopMe"></activity>
 
         <provider
             android:authorities="com.facebook.app.FacebookContentProvider2203741116529889"
             android:name="com.facebook.FacebookContentProvider"
-            android:exported="true"/>
+            android:exported="true" />
     </application>
 
 </manifest>
