@@ -26,6 +26,7 @@ public class Setting_Activity extends AppCompatActivity {
     private boolean adsOff = false;
     private SocketConnect myConnect;
     private MyAssetsManager myAm;
+    private int numOfSkins = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,7 @@ public class Setting_Activity extends AppCompatActivity {
                     bundle.putString("name","player");
                 else
                     bundle.putString("name",usernameText.getText().toString());
+//                bundle.putInt("numOfSkins",numOfSkins);
                 Intent intent = new Intent(Setting_Activity.this,Welcome_Activity.class);
                 intent.putExtras(bundle);
 
@@ -78,10 +80,6 @@ public class Setting_Activity extends AppCompatActivity {
         ipText = findViewById(R.id.text_ip);
         System.out.println("*******SETTING ipAddr = "+myAm.ipAdress);
         ipText.setText(myAm.ipAdress);
-
-
-
-
 
 
         skins = findViewById(R.id.skingroup);
@@ -115,8 +113,12 @@ public class Setting_Activity extends AppCompatActivity {
 
         });
 
-        for (int i = 0; i < 6-myAm.numberOfSkin; i++) {
-            skins.getChildAt(5-i).setEnabled(false);
+        for (int i = 0; i < 6; i++) {
+            skins.getChildAt(i).setEnabled(false);
+        }
+
+        for (int i = 0; i <myAm.numberOfSkin; i++) {
+            skins.getChildAt(i).setEnabled(true);
         }
 
 

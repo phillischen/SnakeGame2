@@ -222,6 +222,9 @@ public class MyAssetsManager{
 
     public void incrementSkin(){
         if (numberOfSkin < 6)
+            System.out.println("share"+numberOfSkin);
             numberOfSkin ++;
+            System.out.println("share"+numberOfSkin);
+
     }
 }
