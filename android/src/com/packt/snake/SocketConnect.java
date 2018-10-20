@@ -17,8 +17,10 @@ import java.util.ArrayList;
 
 public class SocketConnect extends Thread {
     private static SocketConnect myConnect;
-    private String ipAdress = "192.168.0.4";
+//    private String ipAdress = "192.168.0.4";
     //private String ipAdress = "192.168.43.228";
+    private String ipAdress = "10.13.63.245";
+
     private int port = 8080;
     private DataInputStream input;
     private DataOutputStream output;

@@ -35,7 +35,7 @@ import java.util.ArrayList;
 
 public class SingleGameScreen implements Screen{
 
-    private static float speed = 0.08f;
+    private static float speed = 0.1f;
     private float timer = speed;
     private static final float roomOutRatio = 0.2f;
 
@@ -79,9 +79,6 @@ public class SingleGameScreen implements Screen{
         radar = new Radar(5100,5100);
 
         snakeList.add(new Snake(this.game,200,200,"AI"));
-//        snakeList.add(new Snake(this.game,400,600,"AI"));
-//        snakeList.add(new Snake(this.game,500,700,"AI"));
-//        snakeList.add(new Snake(this.game,800,900,"AI"));
 
         viewport = new FitViewport(myAM.getvWidth(), myAM.getvHeight());
         //camera = new OrthographicCamera(screenWidth, screenHeight);
@@ -100,12 +97,10 @@ public class SingleGameScreen implements Screen{
         camera.update();
         addUI();
         setControl();
-
-
     }
 
 
-    private void addUI(){
+    public void addUI(){
         hud = new Hud(myAM);
         myAM.loadMap();
         myAM.manager.finishLoading();
@@ -120,10 +115,9 @@ public class SingleGameScreen implements Screen{
         Image image1 = new Image(texture);
         image1.setPosition(0,0);
         myStage.addActor(image1);
-
     }
 
-    private void setControl(){
+    public void setControl(){
         if (myAM.controlMode == 1 || myAM.controlMode == 3){ //fling control
             myFlingDirection = new FlingDirection();
             Gdx.input.setInputProcessor(new GestureDetector(myFlingDirection));
@@ -190,9 +184,7 @@ public class SingleGameScreen implements Screen{
 
     @Override
     public void resize(int width, int height) {
-        //not much use for android phone, bcs they cannot resize the window
-        //camera.viewportWidth = width/2;
-        //camera.viewportHeight = height/2;
+
     }
 
     @Override
@@ -226,14 +218,11 @@ public class SingleGameScreen implements Screen{
         previousState = state;
         switch (state) {
             case NORMAL: {
-//                queryInput();
                 updateAllSnakes(delta);
             }
             break;
             case GAME_OVER: {
                 if (stateTimer >= 1) { //wait for 1 second after died
-                    //game.setScreen(new GameOverScreen(game));
-
                     game.startGameOver();
                     dispose();
                 }
@@ -244,17 +233,16 @@ public class SingleGameScreen implements Screen{
         draw();
     }
 
-    private void clearScreen() {
+    public void clearScreen() {
         Gdx.gl.glClearColor(Color.WHITE.r,Color.WHITE.g,Color.WHITE.b,Color.WHITE.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
-    private void draw() {
+    public void draw() {
         myAM.batch.setProjectionMatrix(camera.projection);
         myAM.batch.setTransformMatrix(camera.view);
 
         game.batch.begin();
-        // game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         game.batch.draw(background, 0, 0);
         mySnake.drawSnake(game.batch);
         for(Snake snake:snakeList){
@@ -270,12 +258,11 @@ public class SingleGameScreen implements Screen{
         //draw the score hub
         myAM.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
-        //myStage.draw();
         hud.stage.draw();
 
     }
 
-    private void checkFoodCollision(Snake snake) {
+    public void checkFoodCollision(Snake snake) {
         int[] head = {snake.getHeadPosX(), snake.getHeadPosY()};
         if (checkContain(myfood.getFoodObj(), head, snake)) {
             snake.lengthenBody(head[0], head[1]);
@@ -283,7 +270,7 @@ public class SingleGameScreen implements Screen{
         }
     }
 
-    private boolean checkContain(ArrayList<Food.SpeFood> al, int[] lst, Snake snake) {
+    public boolean checkContain(ArrayList<Food.SpeFood> al, int[] lst, Snake snake) {
         for (Food.SpeFood x : al) {
             double collisionRadius = distance(x.getPosX(),x.getPosY(),lst[0]+snake.getSize()/2,lst[1]+snake.getSize()/2);
             double foodRadius = 32;
@@ -327,7 +314,7 @@ public class SingleGameScreen implements Screen{
         return directionDeg;
     }
 
-    private void updateAllSnakes(float delta){
+    public void updateAllSnakes(float delta){
         timer-=delta;
         if(timer<=0){
             timer=speed;
@@ -460,7 +447,7 @@ public class SingleGameScreen implements Screen{
         return degree;
     }
 
-    private void getTouchpadDegree(){
+    public void getTouchpadDegree(){
         if (touchpad.isTouched()){
             float deltaX = touchpad.getKnobPercentX();
             float deltaY = touchpad.getKnobPercentY();
@@ -479,7 +466,7 @@ public class SingleGameScreen implements Screen{
         return degree;
     }
 
-    private void speedUp(){
+    public void speedUp(){
         myAM.userdata.get(mySnake.getMyUsername())[1] *= -1;
     }
 

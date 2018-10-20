@@ -27,18 +27,19 @@ import com.packt.snake.MyAssetsManager;
 import com.packt.snake.Scenes.Hud;
 import com.packt.snake.SnakeGame;
 import com.packt.snake.sprites.Food;
+import com.packt.snake.sprites.Radar;
 import com.packt.snake.sprites.Snake;
 
 import java.util.ArrayList;
 
-public class MultiGameScreen implements Screen{
+public class MultiGameScreen implements Screen {
 
     private static float speed = 0.1f;
     private float timer = speed;
     private static final float roomOutRatio = 0.2f;
 
     private enum STATE {
-        NORMAL, SPEEDUP, GAME_OVER
+        NORMAL, GAME_OVER
     }
 
     private STATE state = STATE.NORMAL;
@@ -57,6 +58,7 @@ public class MultiGameScreen implements Screen{
     private Snake mySnake;
     private ArrayList<Snake> snakeList = new ArrayList<Snake>();
     private int directionDegree = 0, lastdirection = directionDegree;
+    private Radar radar;
 
     private float stateTimer;//count how many seconds the current state last
     //private BitmapFont bitmapFont;
@@ -70,12 +72,15 @@ public class MultiGameScreen implements Screen{
     private float gravityY;
 
     public MultiGameScreen(SnakeGame game) {
+//        super(game);
         this.game = game;
         myAM = this.game.getAm();
         myfood = new Food(this.game);
         //initiate the snake controlled my device owner
         int position = getInitialPosition(myAM.myUsername);
         mySnake = new Snake(this.game,position,position,myAM.myUsername);
+        radar = new Radar(5100,5100);
+
         //initial snakes for remote users
         for (String name : myAM.userdata.keySet()){
             if (!name.equals(myAM.myUsername)){
@@ -105,7 +110,7 @@ public class MultiGameScreen implements Screen{
         setControl();
     }
 
-    private void addUI(){
+    public void addUI(){
         hud = new Hud(myAM);
         myAM.loadMap();
         myAM.manager.finishLoading();
@@ -120,10 +125,9 @@ public class MultiGameScreen implements Screen{
         Image image1 = new Image(texture);
         image1.setPosition(0,0);
         myStage.addActor(image1);
-
     }
 
-    private void setControl(){
+    public void setControl(){
         if (myAM.controlMode == 1 || myAM.controlMode == 3){ //fling control
             myFlingDirection = new FlingDirection();
             Gdx.input.setInputProcessor(new GestureDetector(myFlingDirection));
@@ -184,11 +188,9 @@ public class MultiGameScreen implements Screen{
             myStage.addActor(image1);
 
         }
-
-
     }
 
-    private int getInitialPosition(String name){
+    public int getInitialPosition(String name){
         for (int i = 0; i < myAM.userlist.length;i++){
             if (name.equals(myAM.userlist[i]))
                 return (i+1)*500;
@@ -230,7 +232,7 @@ public class MultiGameScreen implements Screen{
         previousState = state;
         switch (state) {
             case NORMAL: {
-                updateSnake(delta);
+                updateAllSnakes(delta);
             }
             break;
             case GAME_OVER: {
@@ -245,19 +247,19 @@ public class MultiGameScreen implements Screen{
         draw();
     }
 
-    private void clearScreen() {
+    public void clearScreen() {
         Gdx.gl.glClearColor(Color.WHITE.r,Color.WHITE.g,Color.WHITE.b,Color.WHITE.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
-    private void draw() {
+    public void draw() {
         myAM.batch.setProjectionMatrix(camera.projection);
         myAM.batch.setTransformMatrix(camera.view);
 
         game.batch.begin();
         game.batch.draw(background, 0, 0);
         mySnake.drawSnake(game.batch);
-        for(Snake snake:snakeList){
+        for (Snake snake : snakeList) {
             snake.drawSnake(game.batch);
         }
         //draw food
@@ -270,29 +272,10 @@ public class MultiGameScreen implements Screen{
         //draw the score hub
         myAM.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
+
     }
 
-//    private void checkFoodCollision(Snake snake) {
-//        int[] head = {snake.getHeadPosX(), snake.getHeadPosY()};
-//        if (checkContain(myfood.getFoodlist(), head, snake)) {
-//            snake.lengthenBody(head[0], head[1]);
-//            snake.updateScore();
-//        }
-//    }
-
-//    private boolean checkContain(ArrayList<int[]> al, int[] lst, Snake snake) {
-//        for (int[] x : al) {
-//            double collisionRadius = distance(x[0],x[1],lst[0]+snake.getSize()/2,lst[1]+snake.getSize()/2);
-//            double foodRadius = 32;
-//            if (collisionRadius <= (snake.getSize()/2+foodRadius/2)) {
-//                myfood.removeFood(x);
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
-    private void checkFoodCollision(Snake snake) {
+    public void checkFoodCollision(Snake snake) {
         int[] head = {snake.getHeadPosX(), snake.getHeadPosY()};
         if (checkContain(myfood.getFoodObj(), head, snake)) {
             snake.lengthenBody(head[0], head[1]);
@@ -300,11 +283,14 @@ public class MultiGameScreen implements Screen{
         }
     }
 
-    private boolean checkContain(ArrayList<Food.SpeFood> al, int[] lst, Snake snake) {
+    public boolean checkContain(ArrayList<Food.SpeFood> al, int[] lst, Snake snake) {
         for (Food.SpeFood x : al) {
             double collisionRadius = distance(x.getPosX(),x.getPosY(),lst[0]+snake.getSize()/2,lst[1]+snake.getSize()/2);
             double foodRadius = 32;
             if (collisionRadius <= (snake.getSize()/2+foodRadius/2)) {
+                if(x.getType().equals("SpeedUp")){
+                    snake.setYellowAppleTimer(40);
+                }
                 myfood.removeFood(x);
                 return true;
             }
@@ -312,7 +298,7 @@ public class MultiGameScreen implements Screen{
         return false;
     }
 
-    private void updateSnake(float delta){
+    public void updateAllSnakes(float delta){
         timer-=delta;
         if(timer<=0){
             timer=speed;
@@ -325,6 +311,10 @@ public class MultiGameScreen implements Screen{
                     speedLimit = 2;
                     System.out.println("Speed limit = "+speedLimit);
                 }
+            }
+
+            if(mySnake.getYellowAppleTimer()>0){
+                speedLimit = 2;
             }
 
             if (myAM.controlMode == 3)
@@ -422,6 +412,9 @@ public class MultiGameScreen implements Screen{
 
             hud.updateScore();
 
+            /*---update radar---*/
+            radar.updateRadar(mySnake.getHeadPosX(),mySnake.getHeadPosY(),myfood);
+            hud.addRadar(radar);
         }
     }
 
@@ -484,11 +477,11 @@ public class MultiGameScreen implements Screen{
 
     }
 
-    private double distance(double x1, double y1, double x2, double y2){
+    public double distance(double x1, double y1, double x2, double y2){
         return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
     }
 
-    private int getGravityDegree(float gravityX, float gravityY){
+    public int getGravityDegree(float gravityX, float gravityY){
         float myX = Gdx.input.getAccelerometerY();
         float myY = Gdx.input.getAccelerometerX();
         //System.out.println("X = "+myX+"; Y = "+myY);
@@ -497,7 +490,7 @@ public class MultiGameScreen implements Screen{
         return degree;
     }
 
-    private int computeDirectionDegree(float velocityX ,float velocityY){
+    public int computeDirectionDegree(float velocityX ,float velocityY){
         int degree;
         if (velocityX >= 0 && velocityY >= 0) {
             degree = 360 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
@@ -516,7 +509,7 @@ public class MultiGameScreen implements Screen{
         return degree;
     }
 
-    private void getTouchpadDegree(){
+    public void getTouchpadDegree(){
         if (touchpad.isTouched()){
             float deltaX = touchpad.getKnobPercentX();
             float deltaY = touchpad.getKnobPercentY();
@@ -527,7 +520,7 @@ public class MultiGameScreen implements Screen{
         }
     }
 
-    private boolean bodyCollision(Snake mySnake,int myIndex, ArrayList<Snake> snakeList){
+    public boolean bodyCollision(Snake mySnake,int myIndex, ArrayList<Snake> snakeList){
 
         for(int i = 0;i<snakeList.size();i++){
             if(myIndex == i)continue;
@@ -544,7 +537,7 @@ public class MultiGameScreen implements Screen{
         return false;
     }
 
-    private void speedUp(){
+    public void speedUp(){
         //myAM.userdata.get(mySnake.getMyUsername())[1] *= -1;
         myAM.speedupchange = true;
     }
