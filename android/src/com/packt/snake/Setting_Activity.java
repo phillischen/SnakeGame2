@@ -80,6 +80,10 @@ public class Setting_Activity extends AppCompatActivity {
         ipText.setText(myAm.ipAdress);
 
 
+
+
+
+
         skins = findViewById(R.id.skingroup);
         skins.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
 
@@ -110,6 +114,11 @@ public class Setting_Activity extends AppCompatActivity {
             }
 
         });
+
+        for (int i = 0; i < 6-myAm.numberOfSkin; i++) {
+            skins.getChildAt(5-i).setEnabled(false);
+        }
+
 
 
         controls = findViewById(R.id.controlgroup);
