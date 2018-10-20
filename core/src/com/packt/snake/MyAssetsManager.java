@@ -14,18 +14,18 @@ public class MyAssetsManager{
     public final AssetManager manager = new AssetManager();
 
     //resource
-    public final String SNAKEHEAD1 = "snakehead.png";
-    public final String SNAKEBODY1 = "skin1.png";
-    public final String SNAKEHEAD2 = "snakehead.png";
-    public final String SNAKEBODY2 = "skin2.png";
-    public final String SNAKEHEAD3 = "snakehead.png";
-    public final String SNAKEBODY3 = "skin3.png";
-    public final String SNAKEHEAD4 = "snakehead.png";
-    public final String SNAKEBODY4 = "skin4.png";
-    public final String SNAKEHEAD5 = "snakehead.png";
-    public final String SNAKEBODY5 = "skin5.png";
-    public final String SNAKEHEAD6 = "snakehead.png";
-    public final String SNAKEBODY6 = "skin6.png";
+    public final String SNAKEHEAD1 = "head1.png";
+    public final String SNAKEBODY1 = "body1.png";
+    public final String SNAKEHEAD2 = "head2.png";
+    public final String SNAKEBODY2 = "body2.png";
+    public final String SNAKEHEAD3 = "head3.png";
+    public final String SNAKEBODY3 = "body3.png";
+    public final String SNAKEHEAD4 = "head4.png";
+    public final String SNAKEBODY4 = "body4.png";
+    public final String SNAKEHEAD5 = "head5.png";
+    public final String SNAKEBODY5 = "body5.png";
+    public final String SNAKEHEAD6 = "head6.png";
+    public final String SNAKEBODY6 = "body6.png";
 
     public final String MAP1 = "map5001.png";
     public final String SKIN = "skin/comic-ui.json";
@@ -46,6 +46,7 @@ public class MyAssetsManager{
     //public SnakeGame game;
     public String mode = "single";
     public String myUsername = "player";
+    public String ipAdress;
     public boolean newDirection = false;
     public int direction = 0;
     public boolean disconnect = false;

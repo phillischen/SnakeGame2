@@ -14,12 +14,15 @@ import android.widget.Switch;
 public class Setting_Activity extends AppCompatActivity {
     private Button backbutton,submitButton;
     private EditText usernameText;
+    private EditText ipText;
     private String username = "player";
     private RadioGroup skins;
     private RadioGroup controls;
+    private RadioGroup aimode;
     private Switch adsswitch;
     private int skinno = 1;
     private int controlno = 1;
+    private int aimodeno =1;
     private boolean adsOff = false;
     private SocketConnect myConnect;
     private MyAssetsManager myAm;
@@ -67,6 +70,10 @@ public class Setting_Activity extends AppCompatActivity {
         System.out.println("*******SETTING username = "+myAm.myUsername);
         usernameText.setText(myAm.myUsername);
 
+        ipText = findViewById(R.id.text_ip);
+        System.out.println("*******SETTING username = "+myAm.ipAdress);
+        ipText.setText(myAm.ipAdress);
+
 
         skins = findViewById(R.id.skingroup);
         skins.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
@@ -113,6 +120,25 @@ public class Setting_Activity extends AppCompatActivity {
                         break;
                     case R.id.radio_touch:
                         controlno = 1;
+                        break;
+                    default:
+                        controlno = 1;
+                        break;
+                }
+            }
+
+        });
+
+        aimode = findViewById(R.id.aigroup);
+        aimode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radio_simpleai:
+                        aimodeno = 1;
+                        break;
+                    case R.id.radio_hardai:
+                        aimodeno = 2;
                         break;
                     default:
                         controlno = 1;
