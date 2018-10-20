@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class Welcome_Activity extends AppCompatActivity {
-    private Button startButton, testButton, multiButton,submitButton,settingButton;
+    private Button startButton, multiButton,submitButton,settingButton;
     private SocketConnect myConnect;
     //AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
     //AlertDialog alert;
@@ -78,16 +78,6 @@ public class Welcome_Activity extends AppCompatActivity {
             }
         });
 
-        testButton = findViewById(R.id.test_button);
-        testButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Welcome_Activity.this, Score_Activity.class);
-
-                startActivity(intent);
-                Welcome_Activity.this.finish();
-            }
-        });
 
         multiButton = findViewById(R.id.multi_button);
         multiButton.setOnClickListener(new View.OnClickListener() {
