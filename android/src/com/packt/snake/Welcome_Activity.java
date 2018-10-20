@@ -24,6 +24,7 @@ public class Welcome_Activity extends AppCompatActivity {
     private int controlMode;
     private boolean adsOff;
     private String username;
+    private String ipAddr;
     private MyAssetsManager myAm;
 
 
@@ -43,8 +44,9 @@ public class Welcome_Activity extends AppCompatActivity {
                 controlMode = extraBundle.getInt("control");
                 adsOff = extraBundle.getBoolean("adsoff");
                 username = extraBundle.getString("name");
+                ipAddr = extraBundle.getString("ipAddr");
                 if (skin > 0){
-                    myAm.updateSetting(skin, controlMode, adsOff);
+                    myAm.updateSetting(skin, controlMode, adsOff, ipAddr);
                     myAm.myUsername = username;
                     System.out.println("***********read bundle");
                     myConnect.saveData();
@@ -174,7 +176,7 @@ public class Welcome_Activity extends AppCompatActivity {
                             myConnect = SocketConnect.getnew(Welcome_Activity.this);
                             myAm = myConnect.getMyAm();
                             if (skin != 0){
-                                myAm.updateSetting(skin,controlMode,adsOff);
+                                myAm.updateSetting(skin,controlMode,adsOff,ipAddr);
                                 myAm.myUsername = username;
                                 myConnect.saveData();
                             }

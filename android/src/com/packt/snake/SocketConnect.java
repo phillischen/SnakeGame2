@@ -51,8 +51,12 @@ public class SocketConnect extends Thread {
         myAm.numberOfSkin = sp1.getInt("skinNumber",1);
         myAm.adsOff = sp1.getBoolean("adsOff",false);
         myAm.myUsername = sp1.getString("username","player1");
+        myAm.ipAdress = sp1.getString("ipAddr","");
         System.out.println("******************retrive name = "+myAm.myUsername);
         System.out.println("******************retrive skin = "+myAm.myColor);
+        System.out.println("******************retrive ip = "+myAm.ipAdress);
+
+//        ipAdress = myAm.ipAdress;
     }
 
     public static SocketConnect getnew(Context context){
@@ -78,6 +82,7 @@ public class SocketConnect extends Thread {
         editor1.putBoolean("adsOff",myAm.adsOff);
         editor1.putString("username",myAm.myUsername);
         editor1.putInt("skinNumber",myAm.numberOfSkin);
+        editor1.putString("ipAddr",myAm.ipAdress);
         editor1.apply();
         System.out.println("******************save name = "+myAm.myUsername);
     }
@@ -90,11 +95,12 @@ public class SocketConnect extends Thread {
 
     public int initConnect(){
         try {
-
-                System.out.println("create a new socket");
-                mSocket = new Socket(ipAdress, port);
-                input = new DataInputStream(mSocket.getInputStream());
-                output = new DataOutputStream(mSocket.getOutputStream());
+            ipAdress = myAm.ipAdress;
+            System.out.println("create a new socket");
+            System.out.println(myAm.ipAdress);
+            mSocket = new Socket(ipAdress, port);
+            input = new DataInputStream(mSocket.getInputStream());
+            output = new DataOutputStream(mSocket.getOutputStream());
             //mSocket = new Socket(ipAdress, port);
             //System.out.println("connected");
 

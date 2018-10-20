@@ -55,12 +55,16 @@ public class Setting_Activity extends AppCompatActivity {
                 bundle.putInt("skin",skinno);
                 bundle.putInt("control",controlno);
                 bundle.putBoolean("adsoff",adsOff);
+//                System.out.println("asdasdasdasdasdasd"+ipText.getText().toString());
+//                myAm.ipAdress = ipText.getText().toString();
+                bundle.putString("ipAddr",ipText.getText().toString());
                 if (usernameText.getText().toString().equals(""))
                     bundle.putString("name","player");
                 else
                     bundle.putString("name",usernameText.getText().toString());
                 Intent intent = new Intent(Setting_Activity.this,Welcome_Activity.class);
                 intent.putExtras(bundle);
+
                 startActivity(intent);
                 Setting_Activity.this.finish();
             }
@@ -68,10 +72,11 @@ public class Setting_Activity extends AppCompatActivity {
 
         usernameText = findViewById(R.id.text_name);
         System.out.println("*******SETTING username = "+myAm.myUsername);
+//        System.out.println("*******SETTING username2 = "+usernameText);
         usernameText.setText(myAm.myUsername);
 
         ipText = findViewById(R.id.text_ip);
-        System.out.println("*******SETTING username = "+myAm.ipAdress);
+        System.out.println("*******SETTING ipAddr = "+myAm.ipAdress);
         ipText.setText(myAm.ipAdress);
 
 

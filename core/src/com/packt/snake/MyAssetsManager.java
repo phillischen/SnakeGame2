@@ -209,10 +209,11 @@ public class MyAssetsManager{
         return addr;
     }
 
-    public void updateSetting(int color, int control, boolean ad){
+    public void updateSetting(int color, int control, boolean ad, String ipAddr){
         myColor = color;
         controlMode = control;
         adsOff = ad;
+        ipAdress = ipAddr;
     }
 
     public void speedChanger(String name){
