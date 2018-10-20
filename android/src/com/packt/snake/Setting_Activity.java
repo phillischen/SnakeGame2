@@ -121,8 +121,6 @@ public class Setting_Activity extends AppCompatActivity {
             skins.getChildAt(i).setEnabled(true);
         }
 
-
-
         controls = findViewById(R.id.controlgroup);
         controls.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
 

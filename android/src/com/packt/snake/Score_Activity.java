@@ -54,6 +54,7 @@ public class Score_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 myAm.incrementSkin();//for unlocking more skin
+                myConnect.saveData();
                 Uri imageUri = Uri.parse("");
                 Intent myIntent = new Intent(Intent.ACTION_SEND);
                 myIntent.setType("image/*");
