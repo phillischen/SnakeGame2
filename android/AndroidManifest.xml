@@ -16,6 +16,9 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/GdxTheme">
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
         <activity
             android:name=".Welcome_Activity"
             android:screenOrientation="landscape"
@@ -41,6 +44,11 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".AdvertiseActivity"
             android:theme="@style/AppTheme.PopMe"></activity>
+
+        <provider
+            android:authorities="com.facebook.app.FacebookContentProvider2203741116529889"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
     </application>
 
 </manifest>

@@ -53,8 +53,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="759dp"
-        android:layout_height="match_parent"
+        android:layout_width="400dp"
+        android:layout_height="300dp"
         android:layout_below="@id/share_image_button"
         android:layout_centerHorizontal="true"
         android:scaleType="fitCenter"
