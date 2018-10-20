@@ -18,6 +18,7 @@ public class Food implements Disposable{
     private static final int padding = 500;
     private java.util.Random randomX = new java.util.Random(250);
     private java.util.Random randomY = new java.util.Random(3800);
+    private java.util.Random randomGlod = new java.util.Random(800);
     private int maxWidth;
     private int maxHeigh;
     private SnakeGame mygame;
@@ -83,7 +84,7 @@ public class Food implements Disposable{
                 //need a method to avoid food on snake!!
 //                int[] x = {foodX,foodY};
                 SpeFood temp;
-                if(Math.random() < 0.9){
+                if(randomGlod.nextDouble() < 0.8){
                     temp = new SpeFood("Normal",foodX,foodY);
                 }
                 else{
