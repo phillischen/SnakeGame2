@@ -46,7 +46,7 @@ public class MyAssetsManager{
     //public SnakeGame game;
     public String mode = "single";
     public String myUsername = "player";
-    public String ipAdress;
+    public String ipAdress="0.0.0.0";
     public boolean newDirection = false;
     public int direction = 0;
     public boolean disconnect = false;
