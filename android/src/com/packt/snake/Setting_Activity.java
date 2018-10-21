@@ -116,7 +116,9 @@ public class Setting_Activity extends AppCompatActivity {
         for (int i = 0; i < 6; i++) {
             skins.getChildAt(i).setEnabled(false);
         }
-
+        if(myAm.numberOfSkin > 6){
+            myAm.numberOfSkin = 6;
+        }
         for (int i = 0; i <myAm.numberOfSkin; i++) {
             skins.getChildAt(i).setEnabled(true);
         }
