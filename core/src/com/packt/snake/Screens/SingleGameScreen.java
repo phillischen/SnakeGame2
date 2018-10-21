@@ -346,11 +346,11 @@ public class SingleGameScreen implements Screen{
             degreeApple = findDegree(head_x, head_y, x_axis, y_axis);
 
             if (maxDegree > degreeApple && degreeApple > minDegree && disApple > minDis) {
-                System.out.println("food list Before" + copyFoodList.get(0));
+                //System.out.println("food list Before" + copyFoodList.get(0));
                 System.out.println("indexMin: " +indexMin);
                 copyFoodList.remove(indexMin);
                 System.out.println("food list size" + copyFoodList.size());
-                System.out.println("After food list" + copyFoodList.get(0));
+                //System.out.println("After food list" + copyFoodList.get(0));
                 //directionDeg = FindNearestFood(head_x, head_y, copyFoodList, userBody);
                 //findNextFlag = true;
                 if (!copyFoodList.isEmpty())
