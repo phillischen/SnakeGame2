@@ -2,6 +2,7 @@ package com.packt.snake;
 
 import android.Manifest;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -39,6 +40,7 @@ import java.util.Date;
 import java.util.Map;
 
 public class Score_Activity extends AppCompatActivity {
+    private static final int SELECT_PICTURE = 1000 ;
     private Button shareButton, restartButton, shareImageButton;
     public static final int REQUEST_VIDEO_CODE = 1000;
     private TextView scoreText;
@@ -79,50 +81,7 @@ public class Score_Activity extends AppCompatActivity {
         String appLinkAction = appLinkIntent.getAction();
         Uri appLinkData = appLinkIntent.getData();
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_VIDEO_CODE && data != null && data.getData() != null) {
-                Bitmap image = null;
-                try {
-                    image = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                SharePhoto photo = new SharePhoto.Builder()
-                        .setBitmap(image)
-                        .build();
-                if (ShareDialog.canShow(SharePhotoContent.class)) {
-                    SharePhotoContent sharePhotoContent = new SharePhotoContent.Builder()
-                            .addPhoto(photo)
-                            .build();
-                    shareDialog.show(sharePhotoContent);
-                }
-            }
-        }
-    }
-//
-//    private void setupButtons(){
-//        shareButton = findViewById(R.id.share_button);
-//        shareButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //MPermissions.requestPermissions(MainActivity.this, REQUECT_CODE_SDCARD, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-//                myAm.incrementSkin();//for unlocking more skin
-//                myConnect.saveData();
-//                Uri imageUri = Uri.parse("");
-//                Intent myIntent = new Intent(Intent.ACTION_SEND);
-//                myIntent.setType("image/*");
-//                myIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-//                myIntent.putExtra(Intent.EXTRA_TEXT, "Hey I just shared the score of the Slither Game! Look at what I Have got!");
-//                startActivity(Intent.createChooser(myIntent, "Send Image"));
-//
-//            }
-//        });
+    
 
     private void setupButtons() {
             imageView = (ImageView) findViewById(R.id.imageView);
@@ -132,7 +91,15 @@ public class Score_Activity extends AppCompatActivity {
                 public void onClick(View v) {
                     myAm.incrementSkin();//for unlocking more skin
                     myConnect.saveData();
-                    capture(imageView);
+                    File file = capture(imageView);
+                    Uri imageUri = Uri.fromFile(file);
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_SEND);
+                    intent.putExtra(Intent.EXTRA_STREAM,imageUri);
+                    intent.setType("image/*");
+                    //intent.setDataAndType(Uri.parse(filename), "image/*");
+                    startActivity(Intent.createChooser(intent, "Share Image"));
+                    //startActivityForResult(Intent.createChooser(intent, "Select image to share:"), SELECT_PICTURE);
 
                 }
 
@@ -189,29 +156,42 @@ public class Score_Activity extends AppCompatActivity {
             //do nothing
         }
 
-        public void capture(View v){
-            ActivityCompat.requestPermissions(Score_Activity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("YY-MM-DD-HH-MM-SS");
 
-            String filePathName= Environment.getExternalStorageDirectory()+"/"+simpleDateFormat.format(new Date())+".png";
+        public File capture(View v){
+            ActivityCompat.requestPermissions(Score_Activity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
             View view=v.getRootView();
             view.setDrawingCacheEnabled(true);
             view.buildDrawingCache();
             Bitmap bitmap=view.getDrawingCache();
+            File file = null;
             try{
-                System.out.println("File Name"+ filePathName);
-                FileOutputStream fileOutputStream=new FileOutputStream(filePathName);
-                bitmap.compress(Bitmap.CompressFormat.PNG,100,fileOutputStream);
-                fileOutputStream.flush();
-                fileOutputStream.close();
+                File exDir = Environment.getExternalStorageDirectory();
+                String filename = "slither_" + System.currentTimeMillis()+".png";
+                File folder = new File(exDir, "Slither");
+                if(!folder.exists()){
+                    folder.mkdir();
+                }
+                file = new File(folder.getPath(), filename);
+                if(!file.exists()) {
+                    file.createNewFile();
+                }
+                file.setWritable(Boolean.TRUE);
+                FileOutputStream out=new FileOutputStream(file);
+                //FileOutputStream fileOutputStream=new FileOutputStream(f);
+                bitmap.compress(Bitmap.CompressFormat.PNG,100,out);
+                out.flush();
+                out.close();
                 Toast.makeText(this,"Capture Succeed",Toast.LENGTH_SHORT).show();
             }catch (Exception e){
                 e.printStackTrace();
                 Toast.makeText(this,"Capture Failed",Toast.LENGTH_SHORT).show();
             }
 
+            return file;
         }
 
-
     }
+
+
+
 
