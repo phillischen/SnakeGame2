@@ -32,6 +32,7 @@ import com.packt.snake.sprites.Radar;
 import com.packt.snake.sprites.Snake;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class SingleGameScreen implements Screen{
 
@@ -285,33 +286,102 @@ public class SingleGameScreen implements Screen{
         return false;
     }
 
-    public int FindNearestFood(int head_x, int head_y, ArrayList<int[]> foodList) {
-        int directionDeg;
-        int min = 99999999;
-        int[] A = {0,0};
+    public int FindNearestFood(int head_x, int head_y, ArrayList<int[]> foodList, Array<Snake.SnakeBody> userBody) {
+        int directionDeg = 0;
         int x_axis = 0;
         int y_axis = 0;
-        for (int[] x : foodList) {
-            int current = Math.abs(head_x - x[0]) + Math.abs(head_y - x[1]);
-            if (current < min) {
-                min = current;
-                A = new int[]{x[0], x[1]};
-                x_axis = x[0];
-                y_axis = x[1];
+        boolean findNextFlag = false;
+        ArrayList<int[]> copyFoodList = foodList;
+        ArrayList<Integer> xAll = new ArrayList<Integer>();
+        ArrayList<Integer> yAll = new ArrayList<Integer>();
+        ArrayList<Integer> degreeList = new ArrayList<Integer>();
+        ArrayList<Integer> disList = new ArrayList<Integer>();
+        for (Snake.SnakeBody sb : userBody) {
+            xAll.add(sb.getX());
+            yAll.add(sb.getY());
+        }
+        int minX = Collections.min(xAll) - 70;
+        int maxX = Collections.max(xAll) + 70;
+        int minY = Collections.min(yAll) - 70;
+        int maxY = Collections.max(yAll) + 70;
+        int degree1 = findDegree(head_x, head_y, minX, minY);
+        int dis1 = Math.abs(head_x - minX) + Math.abs(head_y - minY);
+        degreeList.add(degree1);
+        disList.add(dis1);
+        int degree2 = findDegree(head_x, head_y, minX, maxY);
+        int dis2 = Math.abs(head_x - minX) + Math.abs(head_y - maxY);
+        degreeList.add(degree2);
+        disList.add(dis2);
+        int degree3 = findDegree(head_x, head_y, maxX, minY);
+        int dis3 = Math.abs(head_x - maxX) + Math.abs(head_y - minY);
+        degreeList.add(degree3);
+        disList.add(dis3);
+        int degree4 = findDegree(head_x, head_y, maxX, maxY);
+        int dis4 = Math.abs(head_x - maxX) + Math.abs(head_y - maxY);
+        degreeList.add(degree4);
+        disList.add(dis4);
+        int minDegree = Collections.min(degreeList);
+        int maxDegree = Collections.max(degreeList);
+        int minDis = Collections.min(disList);
+        int disApple;
+        int degreeApple;
+
+
+        do {
+            int indexMin = 0;
+            int min = 99999999;
+            for (int i = 0; i < copyFoodList.size(); i++) {
+                int[] x = copyFoodList.get(i);
+                int current = Math.abs(head_x - x[0]) + Math.abs(head_y - x[1]);
+                if (current < min) {
+                    min = current;
+                    indexMin = i;
+                    x_axis = x[0];
+                    y_axis = x[1];
+                }
             }
-        }
-        double velocityX = x_axis - head_x + 0.1;
-        double velocityY = head_y - y_axis + 0.1;
-        if (velocityX >= 0 && velocityY >= 0) {
-            directionDeg = 360 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
-        } else if (velocityX >= 0 && velocityY <= 0) {
-            directionDeg = (int)Math.toDegrees(Math.atan(-velocityY / velocityX));
-        } else if (velocityX <= 0 && velocityY >= 0) {
-            directionDeg = (int)Math.toDegrees(Math.atan(-velocityY / velocityX)) + 180;
-        } else {
-            directionDeg = 180 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
-        }
+
+            //Find fffffffffffod
+            disApple = Math.abs(head_x - x_axis) + Math.abs(head_y - y_axis);
+            degreeApple = findDegree(head_x, head_y, x_axis, y_axis);
+
+            if (maxDegree > degreeApple && degreeApple > minDegree && disApple > minDis) {
+                System.out.println("food list Before" + copyFoodList.get(0));
+                System.out.println("indexMin: " +indexMin);
+                copyFoodList.remove(indexMin);
+                System.out.println("food list size" + copyFoodList.size());
+                System.out.println("After food list" + copyFoodList.get(0));
+                //directionDeg = FindNearestFood(head_x, head_y, copyFoodList, userBody);
+                //findNextFlag = true;
+                if (!copyFoodList.isEmpty())
+                    findNextFlag = true;
+                else
+                    findNextFlag = false;
+            } else {
+                directionDeg = findDegree(head_x, head_y, x_axis, y_axis);
+                findNextFlag = false;
+            }
+
+        }while (findNextFlag);
+
         return directionDeg;
+    }
+
+
+    private int findDegree(int x1, int y1, int x2, int y2){
+        int degree = 0;
+        double velocityX = x2 - x1 + 0.1;
+        double velocityY = y1 - y2 + 0.1;
+        if (velocityX >= 0 && velocityY >= 0) {
+            degree = 360 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
+        } else if (velocityX >= 0 && velocityY <= 0) {
+            degree = (int)Math.toDegrees(Math.atan(-velocityY / velocityX));
+        } else if (velocityX <= 0 && velocityY >= 0) {
+            degree = (int)Math.toDegrees(Math.atan(-velocityY / velocityX)) + 180;
+        } else {
+            degree = 180 - (int)Math.toDegrees(Math.atan(velocityY / velocityX));
+        }
+        return degree;
     }
 
     public void updateAllSnakes(float delta){
@@ -392,8 +462,9 @@ public class SingleGameScreen implements Screen{
                 for(int j=0;j<speedLimit;j++) {
                     int snkXB4Update = snake.getHeadPosX();
                     int snkYB4Update = snake.getHeadPosY();
+                    Array<Snake.SnakeBody> userBody = mySnake.getBody();
                     snake.setSettingDirection(
-                            FindNearestFood(snkXB4Update, snkYB4Update, myfood.getFoodlist())
+                            FindNearestFood(snkXB4Update, snkYB4Update, myfood.getFoodlist(), userBody)
                     );
                     snake.moveSnake();
                     if (snake.checkEdge() || bodyCollision(snake, i, allSnakes)) {
