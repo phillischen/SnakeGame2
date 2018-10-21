@@ -1,6 +1,9 @@
 package com.packt.snake;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,13 +12,17 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -41,9 +48,7 @@ import java.util.Date;
 import java.util.Map;
 
 public class Score_Activity extends AppCompatActivity {
-    private static final int SELECT_PICTURE = 1000 ;
     private Button shareButton, restartButton, shareImageButton;
-    public static final int REQUEST_VIDEO_CODE = 1000;
     private TextView scoreText;
     private MyAssetsManager myAm;
     private SocketConnect myConnect;
@@ -52,6 +57,7 @@ public class Score_Activity extends AppCompatActivity {
     private View main;
     CallbackManager callbackManager;
     ShareDialog shareDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,131 +91,131 @@ public class Score_Activity extends AppCompatActivity {
 
 
     private void setupButtons() {
-            imageView = (ImageView) findViewById(R.id.imageView);
-            shareButton = findViewById(R.id.share_button);
-            shareButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myAm.incrementSkin();//for unlocking more skin
-                    myConnect.saveData();
-                    File file = capture(imageView);
-                    Uri imageUri = Uri.fromFile(file);
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_SEND);
-                    intent.putExtra(Intent.EXTRA_STREAM,imageUri);
-                    intent.setType("image/*");
-                    //intent.setDataAndType(Uri.parse(filename), "image/*");
-                    startActivity(Intent.createChooser(intent, "Share Image"));
-                    //startActivityForResult(Intent.createChooser(intent, "Select image to share:"), SELECT_PICTURE);
+        imageView = (ImageView) findViewById(R.id.imageView);
+        shareButton = findViewById(R.id.share_button);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myAm.incrementSkin();//for unlocking more skin
+                myConnect.saveData();
+                File file = capture(imageView);
+                Uri imageUri = Uri.fromFile(file);
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                intent.setType("image/*");
+                //intent.setDataAndType(Uri.parse(filename), "image/*");
+                startActivity(Intent.createChooser(intent, "Share Image"));
+                //startActivityForResult(Intent.createChooser(intent, "Select image to share:"), SELECT_PICTURE);
 
-                }
-
-            });
-            callbackManager = CallbackManager.Factory.create();
-            shareDialog = new ShareDialog(this);
-
-            shareImageButton = findViewById(R.id.share_image_button);
-            shareImageButton.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    save_screenshot(imageView);
-
-                }
-            });
-
-            restartButton = findViewById(R.id.restart_button);
-            restartButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //myAm.resetData();
-
-                    myAm.manager.clear();
-                    //myConnect.renewSocket();
-                    Intent intent = new Intent(Score_Activity.this, Welcome_Activity.class);
-                    startActivity(intent);
-                    Score_Activity.this.finish();
-                }
-            });
-        }
-
-        @Override
-        public void onBackPressed () {
-            //super.onBackPressed();
-            //do nothing
-        }
-
-
-        public File capture(View v){
-            ActivityCompat.requestPermissions(Score_Activity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-            View view=v.getRootView();
-            view.setDrawingCacheEnabled(true);
-            view.buildDrawingCache();
-            Bitmap bitmap=view.getDrawingCache();
-            File file = null;
-            try{
-                File exDir = Environment.getExternalStorageDirectory();
-                String filename = "slither_" + System.currentTimeMillis()+".png";
-                File folder = new File(exDir, "Slither");
-                if(!folder.exists()){
-                    folder.mkdir();
-                }
-                file = new File(folder.getPath(), filename);
-                if(!file.exists()) {
-                    file.createNewFile();
-                }
-                file.setWritable(Boolean.TRUE);
-                FileOutputStream out=new FileOutputStream(file);
-                //FileOutputStream fileOutputStream=new FileOutputStream(f);
-                bitmap.compress(Bitmap.CompressFormat.PNG,100,out);
-                out.flush();
-                out.close();
-                Toast.makeText(this,"Capture Succeed",Toast.LENGTH_SHORT).show();
-            }catch (Exception e){
-                e.printStackTrace();
-                Toast.makeText(this,"Capture Failed",Toast.LENGTH_SHORT).show();
             }
 
-            return file;
-        }
+        });
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
 
-    public void save_screenshot(View v){
-        ActivityCompat.requestPermissions(Score_Activity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-        View view=v.getRootView();
+
+        shareImageButton = findViewById(R.id.share_image_button);
+        shareImageButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                save_screenshot(imageView);
+
+            }
+        });
+
+        restartButton = findViewById(R.id.restart_button);
+        restartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //myAm.resetData();
+
+                myAm.manager.clear();
+                //myConnect.renewSocket();
+                Intent intent = new Intent(Score_Activity.this, Welcome_Activity.class);
+                startActivity(intent);
+                Score_Activity.this.finish();
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        //do nothing
+    }
+
+
+    public File capture(View v) {
+        ActivityCompat.requestPermissions(Score_Activity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        View view = v.getRootView();
         view.setDrawingCacheEnabled(true);
         view.buildDrawingCache();
-        Bitmap bitmap=view.getDrawingCache();
+        Bitmap bitmap = view.getDrawingCache();
         File file = null;
-        try{
+        try {
             File exDir = Environment.getExternalStorageDirectory();
-            String filename = "slither_" + System.currentTimeMillis()+".png";
+            String filename = "slither_" + System.currentTimeMillis() + ".png";
             File folder = new File(exDir, "Slither");
-            if(!folder.exists()){
+            if (!folder.exists()) {
                 folder.mkdir();
             }
             file = new File(folder.getPath(), filename);
-            if(!file.exists()) {
+            if (!file.exists()) {
                 file.createNewFile();
             }
             file.setWritable(Boolean.TRUE);
-            FileOutputStream out=new FileOutputStream(file);
+            FileOutputStream out = new FileOutputStream(file);
             //FileOutputStream fileOutputStream=new FileOutputStream(f);
-            bitmap.compress(Bitmap.CompressFormat.PNG,100,out);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+            Toast.makeText(this, "Capture Succeed", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Capture Failed", Toast.LENGTH_SHORT).show();
+        }
+
+        return file;
+    }
+
+
+    public void save_screenshot(View v) {
+        ActivityCompat.requestPermissions(Score_Activity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        View view = v.getRootView();
+        view.setDrawingCacheEnabled(true);
+        view.buildDrawingCache();
+        Bitmap bitmap = view.getDrawingCache();
+        File file = null;
+        try {
+            File exDir = Environment.getExternalStorageDirectory();
+            String filename = "slither_" + System.currentTimeMillis() + ".png";
+            File folder = new File(exDir, "Slither");
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+            file = new File(folder.getPath(), filename);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            file.setWritable(Boolean.TRUE);
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
             MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), filename, null);
             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file));
             sendBroadcast(intent);
             //successHandler.sendMessage(Message.obtain());
-            Toast.makeText(this,"Screenshot Saved to Phone",Toast.LENGTH_SHORT).show();
-        }catch (Exception e){
+            Toast.makeText(this, "Screenshot Saved to Phone", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this,"Screenshot Failed to save on Phone",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Screenshot Failed to save on Phone", Toast.LENGTH_SHORT).show();
         }
 
+
     }
-
-
 }
 
 
