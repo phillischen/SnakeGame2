@@ -1,6 +1,7 @@
 package com.packt.snake;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -8,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -81,7 +82,7 @@ public class Score_Activity extends AppCompatActivity {
         String appLinkAction = appLinkIntent.getAction();
         Uri appLinkData = appLinkIntent.getData();
     }
-    
+
 
     private void setupButtons() {
             imageView = (ImageView) findViewById(R.id.imageView);
@@ -112,26 +113,8 @@ public class Score_Activity extends AppCompatActivity {
 
                 @Override
                 public void onClick(View v) {
-                    shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-                        @Override
-                        public void onSuccess(Sharer.Result result) {
-                            Toast.makeText(Score_Activity.this, "Share successul!", Toast.LENGTH_SHORT).show();
-                        }
+                    save_screenshot(imageView);
 
-                        @Override
-                        public void onCancel() {
-                            Toast.makeText(Score_Activity.this, "Share cancel!", Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onError(FacebookException e) {
-                            Toast.makeText(Score_Activity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_VIDEO_CODE);
                 }
             });
 
@@ -190,7 +173,44 @@ public class Score_Activity extends AppCompatActivity {
             return file;
         }
 
+    public void save_screenshot(View v){
+        ActivityCompat.requestPermissions(Score_Activity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+        View view=v.getRootView();
+        view.setDrawingCacheEnabled(true);
+        view.buildDrawingCache();
+        Bitmap bitmap=view.getDrawingCache();
+        File file = null;
+        try{
+            File exDir = Environment.getExternalStorageDirectory();
+            String filename = "slither_" + System.currentTimeMillis()+".png";
+            File folder = new File(exDir, "Slither");
+            if(!folder.exists()){
+                folder.mkdir();
+            }
+            file = new File(folder.getPath(), filename);
+            if(!file.exists()) {
+                file.createNewFile();
+            }
+            file.setWritable(Boolean.TRUE);
+            FileOutputStream out=new FileOutputStream(file);
+            //FileOutputStream fileOutputStream=new FileOutputStream(f);
+            bitmap.compress(Bitmap.CompressFormat.PNG,100,out);
+            out.flush();
+            out.close();
+            MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), filename, null);
+            Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file));
+            sendBroadcast(intent);
+            //successHandler.sendMessage(Message.obtain());
+            Toast.makeText(this,"Screenshot Saved to Phone",Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(this,"Screenshot Failed to save on Phone",Toast.LENGTH_SHORT).show();
+        }
+
     }
+
+
+}
 
 
 
