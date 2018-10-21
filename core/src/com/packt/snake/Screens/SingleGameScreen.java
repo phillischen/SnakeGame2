@@ -300,10 +300,10 @@ public class SingleGameScreen implements Screen{
             xAll.add(sb.getX());
             yAll.add(sb.getY());
         }
-        int minX = Collections.min(xAll) - 70;
-        int maxX = Collections.max(xAll) + 70;
-        int minY = Collections.min(yAll) - 70;
-        int maxY = Collections.max(yAll) + 70;
+        int minX = Collections.min(xAll) - 120;
+        int maxX = Collections.max(xAll) + 120;
+        int minY = Collections.min(yAll) - 120;
+        int maxY = Collections.max(yAll) + 120;
         int degree1 = findDegree(head_x, head_y, minX, minY);
         int dis1 = Math.abs(head_x - minX) + Math.abs(head_y - minY);
         degreeList.add(degree1);
