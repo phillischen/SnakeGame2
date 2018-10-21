@@ -1,50 +1,24 @@
 package com.packt.snake;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 public class Score_Activity extends AppCompatActivity {
@@ -54,7 +28,6 @@ public class Score_Activity extends AppCompatActivity {
     private SocketConnect myConnect;
     private String score = "";
     private ImageView imageView;
-    private View main;
     CallbackManager callbackManager;
     ShareDialog shareDialog;
 
@@ -64,7 +37,6 @@ public class Score_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(this.getApplication());
         setContentView(R.layout.activity_score_);
-        main = findViewById(R.id.main);
 
         myConnect = SocketConnect.get();
         myAm = myConnect.getMyAm();
@@ -91,6 +63,7 @@ public class Score_Activity extends AppCompatActivity {
 
 
     private void setupButtons() {
+        //Share Button (to Facebook, Email.. Etc)
         imageView = (ImageView) findViewById(R.id.imageView);
         shareButton = findViewById(R.id.share_button);
         shareButton.setOnClickListener(new View.OnClickListener() {
@@ -104,9 +77,7 @@ public class Score_Activity extends AppCompatActivity {
                 intent.setAction(Intent.ACTION_SEND);
                 intent.putExtra(Intent.EXTRA_STREAM, imageUri);
                 intent.setType("image/*");
-                //intent.setDataAndType(Uri.parse(filename), "image/*");
                 startActivity(Intent.createChooser(intent, "Share Image"));
-                //startActivityForResult(Intent.createChooser(intent, "Select image to share:"), SELECT_PICTURE);
 
             }
 
@@ -114,7 +85,7 @@ public class Score_Activity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
 
-
+        //Screenshot Button (Take screenshots and save it to local album)
         shareImageButton = findViewById(R.id.share_image_button);
         shareImageButton.setOnClickListener(new View.OnClickListener() {
 
@@ -125,6 +96,7 @@ public class Score_Activity extends AppCompatActivity {
             }
         });
 
+        //restart game
         restartButton = findViewById(R.id.restart_button);
         restartButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,10 +176,7 @@ public class Score_Activity extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
-            MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), filename, null);
             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file));
-            sendBroadcast(intent);
-            //successHandler.sendMessage(Message.obtain());
             Toast.makeText(this, "Screenshot Saved to Phone", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
