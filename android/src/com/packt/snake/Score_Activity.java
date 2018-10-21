@@ -4,7 +4,9 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +21,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.share.widget.ShareDialog;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 public class Score_Activity extends AppCompatActivity {
@@ -73,6 +76,14 @@ public class Score_Activity extends AppCompatActivity {
                 myConnect.saveData();
                 File file = capture(imageView);
                 Uri imageUri = Uri.fromFile(file);
+                if(Build.VERSION.SDK_INT>=24){
+                    try{
+                        Method m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+                        m.invoke(null);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_SEND);
                 intent.putExtra(Intent.EXTRA_STREAM, imageUri);
